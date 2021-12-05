@@ -1,0 +1,29 @@
+{% extends "template.html" %}
+
+{% block script %}
+<script>
+
+    document.getElementById("dashboard").classList.remove("bg-blue-900")
+    document.getElementById("dashboard").classList.add("bg-blue-500")
+    document.getElementById("dashboard-icon").classList.remove("text-blue-600")
+
+</script>
+{% endblock %}
+
+{% block title %}
+Dashboard
+{% endblock %}
+
+{% block content %}
+
+<div class="mx-2">
+
+{% for book in books %}
+> {{ book.title }}
+<img src="https://covers.openlibrary.org/b/isbn/{{ book.isbn }}-M.jpg" alt="">
+<br>
+{% endfor %}
+
+</div>
+
+{% endblock %}
