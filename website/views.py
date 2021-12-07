@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, sessio
 import requests
 from .models import Books
 from . import db
+import json
 
 URL = "https://frappe.io/api/method/frappe-library/"
 views = Blueprint('views', __name__)
@@ -65,8 +66,17 @@ def logout():
         session.clear()
         return redirect(url_for('views.index', alert="Logged out Successfully."))
 
+@views.route('/book/<string:isbn>', methods=['GET'])
+def bookById(isbn):
+    print("got ISBN = ",isbn)
+    books = requests.get(URL+f"?isbn={isbn}").json()['message']
+    print(books)
+    if len(books) == 0:
+        return render_template('404.html')
+    return books[0]['title']
+
 @views.post('/get_books')
 def get_books():
-    books = requests.get(URL).json()['message']
-    print(books)
+    params = json.loads(request.data)
+    books = requests.get(URL+f"?page={params['page']}").json()['message']
     return jsonify(books)
