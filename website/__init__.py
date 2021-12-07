@@ -18,6 +18,7 @@ def start_app():
     db.init_app(app)
 
     from . views import views, page_not_found
+    from .models import Books, Lms, Members
 
     create_database(app)
 

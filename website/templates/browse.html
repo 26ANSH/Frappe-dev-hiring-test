@@ -1,0 +1,49 @@
+{% extends "template.html" %}
+
+{% block script %}
+<script>
+
+    getBooks()
+
+    document.getElementById("browse").classList.remove("bg-blue-900")
+    document.getElementById("browse").classList.add("bg-blue-500")
+    document.getElementById("browse-icon").classList.remove("text-blue-600")
+
+    function getBooks(){
+        fetch("/get_books", {
+            method: "POST",
+        }).then((_res) => {
+            _res.json().then(data => {
+                for (var i = 0; i < data.length; i++)
+                {
+                    book = data[i]
+                    document.getElementById("books").innerHTML += `<div class="w-full justify-evenly flex flex-col shadow-lg resources-responsive m-1.5 border-2 hover:bg-blue-50 border-blue-900 p-2 rounded-md transition-linear duration-300">
+    
+                        <h1 class="text-xl text-blue-800 font-bold"> `+ book.title +`</h1>
+                
+                        <hr class="border border-dashed border-blue-900 my-2">
+                
+                        <img src="https://covers.openlibrary.org/b/isbn/`+ book.isbn +`-M.jpg" class="mx-auto h-48" alt="">
+                
+                        <h3 class="self-end text-white text-sm bg-blue-700 mt-1 mb-0.5 p-1 w-full">Author:`+  book.authors +`</h3>
+                
+                    </div>`
+                }
+            });
+        });
+    }
+
+</script>
+{% endblock %}
+
+{% block title %}
+Browse books
+{% endblock %}
+
+{% block content %}
+
+<div id="books" class="mx-auto flex flex-wrap justify-around">
+
+</div>
+
+{% endblock %}
