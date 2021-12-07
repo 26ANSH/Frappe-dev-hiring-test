@@ -3,21 +3,26 @@
 {% block script %}
 <script>
 
+    var page_number = 1
     getBooks()
 
     document.getElementById("browse").classList.remove("bg-blue-900")
     document.getElementById("browse").classList.add("bg-blue-500")
     document.getElementById("browse-icon").classList.remove("text-blue-600")
 
-    function getBooks(){
+    function getBooks()
+    {
+        console.log(page_number)
         fetch("/get_books", {
-            method: "POST",
+            method: "POST", 
+            body: JSON.stringify({ page: page_number }),
         }).then((_res) => {
             _res.json().then(data => {
                 for (var i = 0; i < data.length; i++)
                 {
                     book = data[i]
-                    document.getElementById("books").innerHTML += `<div class="w-full justify-evenly flex flex-col shadow-lg resources-responsive m-1.5 border-2 hover:bg-blue-50 border-blue-900 p-2 rounded-md transition-linear duration-300">
+                    document.getElementById("loader").style.display = "none"
+                    document.getElementById("books").innerHTML += `<a href="/book/`+ book.isbn +`" class="w-full justify-evenly flex flex-col shadow-lg resources-responsive m-1.5 border-2 hover:bg-blue-50 border-blue-900 p-2 rounded-md transition-linear duration-300">
     
                         <h1 class="text-xl text-blue-800 font-bold"> `+ book.title +`</h1>
                 
@@ -27,17 +32,28 @@
                 
                         <h3 class="self-end text-white text-sm bg-blue-700 mt-1 mb-0.5 p-1 w-full">Author:`+  book.authors +`</h3>
                 
-                    </div>`
+                    </a>`
                 }
             });
         });
+
+        page_number++;
     }
+
+    document.addEventListener('scroll', function (event) {
+        var st = Math.max(document.documentElement.scrollTop,document.body.scrollTop);
+        if ((st+document.documentElement.clientHeight)>=(document.documentElement.scrollHeight)) 
+        {
+            document.getElementById("loader").style.display = "inline"
+            getBooks()
+        }
+    });
 
 </script>
 {% endblock %}
 
 {% block title %}
-Browse books
+Browse 🔎
 {% endblock %}
 
 {% block content %}
@@ -45,5 +61,7 @@ Browse books
 <div id="books" class="mx-auto flex flex-wrap justify-around">
 
 </div>
+
+<span class="p-4 text-2xl font-bold italic text-black" id="loader">Loading ...</span>
 
 {% endblock %}
