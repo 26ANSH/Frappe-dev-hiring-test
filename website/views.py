@@ -4,7 +4,7 @@ from .models import Books
 from . import db
 import json
 
-URL = "https://frappe.io/api/method/frappe-library/"
+URL = "https://frappe.io/api/method/frappe-library/?page="
 views = Blueprint('views', __name__)
 
 def page_not_found(e):
@@ -55,10 +55,7 @@ def dashboard():
 
 @views.route('/browse', methods=['GET'])
 def browse():
-    if "logged_in" in session:
-        return render_template("browse.html")
-    else:
-        return redirect(url_for('views.index', error="Please login to view this page."))
+    return render_template("browse.html")
 
 @views.route('/logout', methods=['GET'])
 def logout():
@@ -78,5 +75,12 @@ def bookById(isbn):
 @views.post('/get_books')
 def get_books():
     params = json.loads(request.data)
-    books = requests.get(URL+f"?page={params['page']}").json()['message']
+    print(type(params))
+    url = URL + str(params['page'])
+    for key in params.keys():
+        if key != 'page':
+            url += f"&{key}={params[key]}"
+
+    books = requests.get(url).json()['message']
+    print(books)
     return jsonify(books)
