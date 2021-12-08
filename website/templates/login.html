@@ -14,17 +14,17 @@ Login
 
 {% if error %}
 <p id="alert" class="rounded-md font-bold text-xl italic bg-red-100 text-red-700 mt-3 mx-4 p-2">{{ error }}<button
-        onclick="clearalert()" class="text-white bg-gray-500 rounded-full float-right px-2 hover:bg-gray-600"> X
+        onclick="clearalert()" class="fixed text-white bg-gray-500 rounded-full right-0 mr-6 px-2 hover:bg-gray-600"> X
     </button></p>
 {% endif %}
 
-<div class="flex flex-row justify-center">
+<div class="flex flex-col lg:flex-row md:flex-row xl:flex-row justify-center pb-8">
 
-    <div class="w-2/4 mr-2 hidden lg:block xl:block">
+    <div class="w-full lg:w-1/2 md:w-3/5 mr-2 self-center">
         <img src="{{ url_for('static', filename='login.svg')}}">
     </div>
 
-    <div class="py-3 text-center self-center">
+    <div class="px-2 text-center self-center">
         <span class="text-2xl font-bold dark:text-white">Library Management System</span>
         <div class="relative mt-4 bg-white shadow-lg sm:rounded-lg text-left dark:bg-gray-200 rounded-t-md ">
             <div class="h-3 bg-blue-700 dark:bg-blue-400 rounded-t-md"></div>
@@ -49,9 +49,8 @@ Login
                                             password?</a>
                                     </div>
                                     <hr class="my-4 border-2 border-blue-700">
-                                    <span class="text-sm">Don't have an account ? <a href="#"
-                                            class="text-blue-700 hover:bg-blue-100 hover:underline">Signup
-                                            Here</a></span>
+                                    <span class="text-sm">Are you a Member ? <a href="/browse"
+                                            class="text-blue-700 hover:bg-blue-100 hover:underline">Browse books</a></span>
                 </div>
             </form>
         </div>
