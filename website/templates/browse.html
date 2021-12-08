@@ -3,22 +3,40 @@
 {% block script %}
 <script>
 
-    var page_number = 1
-    getBooks()
+    function BtnDisable(value)
+    {
+        document.getElementById("bookBtnOne").disabled = value
+        document.getElementById("bookBtnTwo").disabled = value
+    }
 
+    var page_number = 1
+    getBooks(0)
     document.getElementById("browse").classList.remove("bg-blue-900")
     document.getElementById("browse").classList.add("bg-blue-500")
     document.getElementById("browse-icon").classList.remove("text-blue-600")
 
-    function getBooks()
+    function getBooks(change)
     {
-        console.log(page_number)
+        BtnDisable(true)
+        if(change + page_number > 0)
+        {
+        document.getElementById("books").innerHTML = ''
+        document.getElementById("loader").style.display = "inline"
+        page_number += change
+        document.getElementById("pageNumber").innerHTML = page_number
         fetch("/get_books", {
             method: "POST", 
-            body: JSON.stringify({ page: page_number }),
+            body: JSON.stringify({ 
+                page: page_number,
+                title: document.getElementById("title").value,
+                authors: document.getElementById("author").value,
+            }),
         }).then((_res) => {
             _res.json().then(data => {
-                for (var i = 0; i < data.length; i++)
+
+                if(data.length >0)
+                {
+                    for (var i = 0; i < data.length; i++)
                 {
                     book = data[i]
                     document.getElementById("loader").style.display = "none"
@@ -34,20 +52,29 @@
                 
                     </a>`
                 }
+                BtnDisable(false)
+                }
+                else
+                {
+                    document.getElementById("loader").style.display = "none"
+                    document.getElementById("books").innerHTML += `<h1 class="text-xl text-red-700 mt-2 font-bold"> No books found</h1>`
+                    BtnDisable(true)
+                    document.getElementById("bookBtnOne").disabled = false
+                }
+
             });
         });
-
-        page_number++;
+    }
     }
 
-    document.addEventListener('scroll', function (event) {
-        var st = Math.max(document.documentElement.scrollTop,document.body.scrollTop);
-        if ((st+document.documentElement.clientHeight)>=(document.documentElement.scrollHeight)) 
-        {
-            document.getElementById("loader").style.display = "inline"
-            getBooks()
-        }
-    });
+    function filter(){
+        document.getElementById("filter").classList.toggle("hidden")
+    }
+
+    function search(){
+        getBooks(1-page_number)
+        filter()
+    }
 
 </script>
 {% endblock %}
@@ -55,13 +82,34 @@
 {% block title %}
 Browse 🔎
 {% endblock %}
-
+r
 {% block content %}
+
+<div class="fixed right-0 text-white flex flex-col px-1">
+    <div> <button onclick="filter()" class="mr-5 mt-5 float-right rounded-full px-4 py-2 bg-blue-900">Filter</button></div>
+    <div id="filter" class="mt-4 border bg-blue-900 mr-2 p-3 rounded-lg hidden">
+        Title: <input id="title" value="" placeholder="Book title" type="text" class="text-blue-900 py-1 px-2 rounded-md focus:border focus:border-blue-700" type="text">
+        <br class="my-8">
+        Author: <input id="author" value="" placeholder="Book author" type="text" class="text-blue-900 py-1 px-2 rounded-md focus:border focus:border-blue-700" type="text">
+        <button onclick="search()" class="bg-white text-blue-900 m-2 p-1 rounded">Search</button>
+    </div>
+</div>
+
 
 <div id="books" class="mx-auto flex flex-wrap justify-around">
 
 </div>
 
-<span class="p-4 text-2xl font-bold italic text-black" id="loader">Loading ...</span>
+<div id="loader" class="hidden">
+    <div class="w-3/4 mx-auto flex flex-col md:flex-row lg:flex-row items-center justify-center px-4 py-2 border border-transparent text-2xl font-bold rounded-md text-white bg-blue-700 
+transition ease-in-out duration-150 cursor-not-allowed">
+<div class="mr-2">Loading</div>
+<div><svg class="animate-spin h-8 w-8 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+</svg></div>
+</div>
+</div>
+
 
 {% endblock %}
