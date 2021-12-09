@@ -14,17 +14,18 @@
     document.getElementById("browse").classList.remove("bg-blue-900")
     document.getElementById("browse").classList.add("bg-blue-500")
     document.getElementById("browse-icon").classList.remove("text-blue-600")
+    document.getElementById("bookPage").classList.remove("hidden")
 
     function getBooks(change)
     {
         BtnDisable(true)
         if(change + page_number > 0)
         {
-        document.getElementById("books").innerHTML = ''
+        document.getElementById("booksContent").innerHTML = ''
         document.getElementById("loader").style.display = "inline"
         page_number += change
         document.getElementById("pageNumber").innerHTML = page_number
-        fetch("/get_books", {
+        fetch("/api/get_books", {
             method: "POST", 
             body: JSON.stringify({ 
                 page: page_number,
@@ -40,7 +41,7 @@
                 {
                     book = data[i]
                     document.getElementById("loader").style.display = "none"
-                    document.getElementById("books").innerHTML += `<a href="/book/`+ book.isbn +`" class="w-full justify-evenly flex flex-col shadow-lg resources-responsive m-1.5 border-2 hover:bg-blue-50 border-blue-900 p-2 rounded-md transition-linear duration-300">
+                    document.getElementById("booksContent").innerHTML += `<a href="/book/`+ book.isbn +`" class="w-full justify-evenly flex flex-col shadow-lg resources-responsive m-1.5 border-2 hover:bg-blue-50 border-blue-900 p-2 rounded-md transition-linear duration-300">
     
                         <h1 class="text-xl text-blue-800 font-bold"> `+ book.title +`</h1>
                 
@@ -57,7 +58,7 @@
                 else
                 {
                     document.getElementById("loader").style.display = "none"
-                    document.getElementById("books").innerHTML += `<h1 class="text-xl text-red-700 mt-2 font-bold"> No books found</h1>`
+                    document.getElementById("booksContent").innerHTML += `<h1 class="text-xl text-red-700 mt-2 font-bold"> No books found</h1>`
                     BtnDisable(true)
                     document.getElementById("bookBtnOne").disabled = false
                 }
@@ -96,7 +97,7 @@ r
 </div>
 
 
-<div id="books" class="mx-auto flex flex-wrap justify-around">
+<div id="booksContent" class="mx-auto flex flex-wrap justify-around">
 
 </div>
 
