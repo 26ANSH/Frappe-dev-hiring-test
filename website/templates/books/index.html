@@ -1,0 +1,140 @@
+{% extends "template.html" %}
+
+{% block script %}
+<script>
+    var id = ''
+    document.getElementById("books").classList.remove("bg-blue-900")
+    document.getElementById("books").classList.add("bg-blue-500")
+    document.getElementById("books-icon").classList.remove("text-blue-600")
+
+    function checker(Bid)
+    {
+        id = Bid
+        document.getElementById(id).classList.add("bg-red-500")
+        document.getElementById('confirmBox').classList.remove("hidden")
+    }
+
+    function deleteBook(confirm)
+     {
+        document.getElementById('confirmBox').classList.add("hidden")
+        if (confirm)
+        {
+            fetch('/books/delete-book' , {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    id: id
+                })
+            }).then(function (response) {
+                return response.json();
+            }).then(function (data) {
+                if (data.success) {
+                    document.getElementById(id).remove();
+                }
+            });
+        }
+        else{
+            document.getElementById(id).classList.remove("bg-red-500")
+        }
+    };
+
+</script>
+{% endblock %}
+
+{% block title %}
+Books
+{% endblock %}
+
+{% block content %}
+
+<!-- This example requires Tailwind CSS v2.0+ -->
+<div id="confirmBox" class="hidden fixed z-10 inset-0 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+      <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
+      <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+      <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+        <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+          <div class="sm:flex sm:items-start">
+            <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
+              <svg class="h-6 w-6 text-red-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+            </div>
+            <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+              <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">
+                Delete Book
+              </h3>
+              <div class="mt-2">
+                <p class="text-sm text-gray-500">
+                  Are you sure you want to Delete this book? This action cannot be undone.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+          <button onclick="deleteBook(true)" type="button" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm">
+            Delete
+          </button>
+          <button onclick="deleteBook(false)" type="button" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+<div class=" mx-2 flex items-center justify-center">
+    <div class="container">
+        <table class="w-full flex flex-row flex-no-wrap sm:bg-white overflow-hidden sm:shadow-lg my-5">
+           
+            <thead id="booksTableHead" class="text-white">
+
+                {% for book in books %}
+
+                <tr class="bg-blue-700 flex flex-col flex-no wrap sm:table-row rounded-l-lg sm:rounded-none mb-2 sm:mb-0">
+                    <th class="p-3 text-left">Id</th>
+                    <th class="p-3 text-left">Title</th>
+                    <th class="p-3 text-left">Quantity</th>
+                    <th class="p-3 text-left">Actions</th>
+                </tr>
+
+                {% endfor %}
+
+            </thead>
+    
+            <tbody id="booksTableContent" class="flex-1 sm:flex-none">
+
+                {% for book in books %}
+
+                <tr id="{{ book.id }}" class="flex border-blue-900 border-2 border-t-0 flex-col flex-no wrap sm:table-row mb-2 sm:mb-0 hover:bg-blue-50 mb-2">
+                    <td class="border-blue-900 border p-2 text-center">{{ book.id }}</td>
+                  <td class="border-blue-900 border p-2 ">{{ book.title }}</td>
+                  <td class="border-blue-900 border p-2">{{ book.quantity }}</td>
+                  <td class="border-blue-900 p-1 text-base flex">
+                      <button onclick="checker('{{ book.id }}')" class="mr-1 py-1 px-2 border-red-600 border-2 rounded-xl border bg-red-700 text-white hover:bg-red-900">Delete</button>
+                      <a href="/books/book/{{book.book_id}}" class="inline-flex items-center py-1 px-2 border-green-600 border-2 rounded-xl border bg-green-700 text-white hover:bg-green-900">
+                        <svg class="h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                            <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+                          </svg>
+                          Edit</a>
+                  </td>
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+    </div>
+</div>
+
+
+
+
+
+{% endblock %}

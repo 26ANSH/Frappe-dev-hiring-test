@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+
+{% if book %}
+<br>
+Book id: {{ book.id }}
+<br>
+Book ISBN: {{ book.isbn }}
+<br>
+Book Title: {{ book.title }}
+<br>
+Book Author: {{ book.author }}
+<br>
+Book Quantity: {{ book.quantity }}
+<br>
+Book Frappe id: {{ book.book_id }}
+<br>
+{% else%}
+no book found
+{% endif %}
+
+</body>
+</html>
