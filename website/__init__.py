@@ -18,10 +18,14 @@ def start_app():
     db.init_app(app)
 
     from . views import views, page_not_found
+    from . api import api
+    from . books import books
     from .models import Books, Lms, Members
 
     create_database(app)
 
     app.register_error_handler(404, page_not_found)
     app.register_blueprint(views, url_prefix='/')
+    app.register_blueprint(api, url_prefix='/api')
+    app.register_blueprint(books, url_prefix='/books')
     return app

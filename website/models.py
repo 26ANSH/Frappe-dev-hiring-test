@@ -6,12 +6,18 @@ class Books(db.Model):
     id       = db.Column(db.Integer, primary_key=True)
     isbn     = db.Column(db.Integer, nullable=False, unique=True)
     quantity = db.Column(db.Integer, nullable=False)
+    issued = db.Column(db.Integer, nullable=False, default=0)
     title    = db.Column(db.String(100), nullable=False)
     author   = db.Column(db.String(100), nullable=False)
-    rating   = db.Column(db.Integer, nullable=False)
-    language = db.Column(db.String(5), nullable=False)
     book_id  = db.Column(db.Integer, db.ForeignKey('books.id'))
 
+    def __init__(self, book, quantity):
+        self.isbn = book['isbn']
+        self.quantity = quantity
+        self.title = book['title']
+        self.author = book['authors']
+        self.book_id = book['bookID']
+        
 class Members(db.Model):
     __tablename__ = 'members'
     id        = db.Column(db.Integer, primary_key=True)
