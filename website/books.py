@@ -9,13 +9,19 @@ books = Blueprint('books', __name__)
 
 @books.route('/')
 def index():
-    books = Books.query.all()
-    return render_template('books/index.html', books= books)
+    if "logged_in" in session:
+        books = Books.query.all()
+        return render_template('books/index.html', books= books)
+    else:
+        return redirect(url_for('views.index', error="Please login to view this page."))
 
 @books.route('/book/<int:id>')
 def book(id):
-    book = Books.query.filter_by(book_id=id).first()
-    return render_template('books/book.html', book=book)
+    if "logged_in" in session:
+        book = Books.query.filter_by(book_id=id).first()
+        return render_template('books/book.html', book=book)
+    else:
+        return redirect(url_for('views.index', error="Please login to view this page."))
 
 @books.route('/import', methods=['GET'])
 def dashboard():
@@ -24,15 +30,25 @@ def dashboard():
     else:
         return redirect(url_for('views.index', error="Please login to view this page."))
 
+@books.route('/browse', methods=['GET'])
+def browse():
+    return render_template("books/browse.html")
+
 # API stuff #
 @books.delete('/delete-book')
-def ok():
+def delete():
     params = json.loads(request.data)
     id = int(params['id'])
-    print('Delete request received for book id = ',id)
-    check = Books.query.filter_by(id=id).delete()
+    Books.query.filter_by(id=id).delete()
     db.session.commit()
-    print(check)
+    return jsonify({'success': True})
+
+@books.delete('/delete-books')
+def deleteAll():
+    params = json.loads(request.data)
+    ids = params['ids']
+    Books.query.filter(Books.id.in_(ids)).delete()
+    db.session.commit()
     return jsonify({'success': True})
 
 @books.post('/add-books')

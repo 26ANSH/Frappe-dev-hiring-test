@@ -20,7 +20,7 @@ def start_app():
     from . views import views, page_not_found
     from . api import api
     from . books import books
-    from .models import Books, Lms, Members
+    from .models import Books
 
     create_database(app)
 

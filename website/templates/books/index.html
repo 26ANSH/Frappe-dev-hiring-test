@@ -3,15 +3,46 @@
 {% block script %}
 <script>
     var id = ''
+    var ids = []
+
     document.getElementById("books").classList.remove("bg-blue-900")
     document.getElementById("books").classList.add("bg-blue-500")
     document.getElementById("books-icon").classList.remove("text-blue-600")
 
+    function toggleDelete(){
+      for (var i = 0; i < books.length; i++)
+      {
+        document.getElementById(books[i]).remove();
+      }
+    }
     function checker(Bid)
     {
         id = Bid
         document.getElementById(id).classList.add("bg-red-500")
         document.getElementById('confirmBox').classList.remove("hidden")
+    }
+
+    function deleteAll()
+    {
+      var books = []
+      var checkboxes = document.querySelectorAll('input[name="selectBook"]:checked')
+      console.log(checkboxes)
+      for (var i = 0; i < checkboxes.length; i++) {
+        books.push(checkboxes[i].value)
+      }
+      deleteBooks(books)
+    }
+
+    function SelectAll(source) {
+      checkboxes = document.getElementsByName('selectBook');
+      for(var i=0, n=checkboxes.length;i<n;i++) {
+        checkboxes[i].checked = source.checked;
+      }
+    }
+
+    function changeBookQuantity(val){
+      var quantity = parseInt(document.getElementById('bookQuantity').innerHTML)
+      document.getElementById('bookQuantity').innerHTML = quantity - val
     }
 
     function deleteBook(confirm)
@@ -32,6 +63,7 @@
             }).then(function (data) {
                 if (data.success) {
                     document.getElementById(id).remove();
+                    changeBookQuantity(1)
                 }
             });
         }
@@ -40,7 +72,32 @@
         }
     };
 
-</script>
+    function deleteBooks(books)
+    {
+      fetch('/books/delete-books' , {
+               method: 'DELETE',
+               headers: {
+                   'Content-Type': 'application/json'
+               },
+               body: JSON.stringify({
+                   ids: books
+               })
+           }).then(function (response) {
+               return response.json();
+           }).then(function (data) {
+               if (data.success) 
+               {
+                for (var i = 0; i < books.length; i++)
+                {
+                  document.getElementById(books[i]).remove();
+                }
+
+                  changeBookQuantity(books.length)
+            }
+      });
+   };
+
+  </script>
 {% endblock %}
 
 {% block title %}
@@ -49,7 +106,6 @@ Books
 
 {% block content %}
 
-<!-- This example requires Tailwind CSS v2.0+ -->
 <div id="confirmBox" class="hidden fixed z-10 inset-0 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
     <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
       <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
@@ -84,26 +140,43 @@ Books
         </div>
       </div>
     </div>
-  </div>
-
-
+</div>
 
 <div class=" mx-2 flex items-center justify-center">
     <div class="container">
+
+      {% if books|length == 0 %}
+      <div class="w-11/12 py-2 text-center bg-red-100 mx-auto border-2 border-red-600 text-red-800 text-2xl font-bold rounded-md">
+        No books in Database <a href="/books/import" class="bg-red-700 px-2 py-1 text-white rounded-full text-xl hover:bg-red-800">+Add</a>
+      </div>
+
+      {% else %}
+            
+      <div class="mx-auto w-11/12 flex items-center justify-between flex-col md:flex-row">
+        <div class="my-2 md:my-0">
+          <span class="border-2 border-blue-700 rounded-lg px-2 py-2">
+            Total Books in Database: <span id="bookQuantity">{{ books|length }}</span>
+          </span>
+        </div>
+
+        <div class="my-2 md:my-0">
+          <span class="border-2 border-blue-700 rounded-lg px-2 py-2 self-center">
+            Select All
+            <input type="checkbox" onclick="SelectAll(this)" class="form-checkbox h-5 w-5 text-red-600">
+          </span>
+          <button onclick="deleteAll()" class="ml-4 py-1 px-2 border-red-600 border-2 rounded-xl border bg-red-700 text-white hover:bg-red-900">Delete All</button>
+        </div>
+      </div>
         <table class="w-full flex flex-row flex-no-wrap sm:bg-white overflow-hidden sm:shadow-lg my-5">
            
             <thead id="booksTableHead" class="text-white">
 
-                {% for book in books %}
-
-                <tr class="bg-blue-700 flex flex-col flex-no wrap sm:table-row rounded-l-lg sm:rounded-none mb-2 sm:mb-0">
+                <tr class="bg-blue-700 flex flex-col flex-no wrap md:table-row hidden rounded-l-lg sm:rounded-none mb-2 sm:mb-0">
                     <th class="p-3 text-left">Id</th>
                     <th class="p-3 text-left">Title</th>
                     <th class="p-3 text-left">Quantity</th>
                     <th class="p-3 text-left">Actions</th>
                 </tr>
-
-                {% endfor %}
 
             </thead>
     
@@ -112,10 +185,14 @@ Books
                 {% for book in books %}
 
                 <tr id="{{ book.id }}" class="flex border-blue-900 border-2 border-t-0 flex-col flex-no wrap sm:table-row mb-2 sm:mb-0 hover:bg-blue-50 mb-2">
-                    <td class="border-blue-900 border p-2 text-center">{{ book.id }}</td>
-                  <td class="border-blue-900 border p-2 ">{{ book.title }}</td>
-                  <td class="border-blue-900 border p-2">{{ book.quantity }}</td>
-                  <td class="border-blue-900 p-1 text-base flex">
+                    <td class="border-blue-900 border p-2 text-center"><span class="sm:inline font-bold md:hidden">Book Id - </span>{{ book.id }}</td>
+                  <td class="border-blue-900 border p-2 "><span class="sm:inline font-bold md:hidden">Title - </span>{{ book.title }}</td>
+                  {% set remaining = book.quantity - book.issued %}
+                  <td class="border-blue-900 border p-2 text-center"> <span class="sm:inline font-bold md:hidden">Quantity - </span> {{ remaining }}/{{ book.quantity }}</td>
+                  <td class="border-blue-900 p-1 text-base flex items-center justify-evenly">
+                    <div>
+                      <input type="checkbox" name="selectBook" value="{{ book.id }}" class="h-5 w-10">
+                    </div>
                       <button onclick="checker('{{ book.id }}')" class="mr-1 py-1 px-2 border-red-600 border-2 rounded-xl border bg-red-700 text-white hover:bg-red-900">Delete</button>
                       <a href="/books/book/{{book.book_id}}" class="inline-flex items-center py-1 px-2 border-green-600 border-2 rounded-xl border bg-green-700 text-white hover:bg-green-900">
                         <svg class="h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -130,11 +207,8 @@ Books
             </tbody>
 
         </table>
+      {% endif %}
     </div>
 </div>
-
-
-
-
 
 {% endblock %}
