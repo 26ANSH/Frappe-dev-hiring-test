@@ -4,6 +4,7 @@ from os import path
 
 db = SQLAlchemy()
 DB_NAME = "database.db"
+PASSWORD = "admin@lms"
 
 
 def create_database(app):
@@ -20,9 +21,10 @@ def start_app():
     from . views import views, page_not_found
     from . api import api
     from . books import books
-    from .models import Books
+    from .models import Books, Members, issued
 
     create_database(app)
+    db.create_all(app=app)
 
     app.register_error_handler(404, page_not_found)
     app.register_blueprint(views, url_prefix='/')
