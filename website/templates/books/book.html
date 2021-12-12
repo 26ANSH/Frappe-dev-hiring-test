@@ -9,6 +9,9 @@
 <body>
 
 {% if book %}
+Date: {{ book.added.date() }}
+<br>
+<br>
 <br>
 Book id: {{ book.id }}
 <br>
@@ -25,6 +28,8 @@ Book Frappe id: {{ book.book_id }}
 {% else%}
 no book found
 {% endif %}
+
+<a href="/books">return back</a>
 
 </body>
 </html>

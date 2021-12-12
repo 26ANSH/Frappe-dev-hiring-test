@@ -9,17 +9,17 @@
     document.getElementById("books").classList.add("bg-blue-500")
     document.getElementById("books-icon").classList.remove("text-blue-600")
 
-    function toggleDelete(){
-      for (var i = 0; i < books.length; i++)
-      {
-        document.getElementById(books[i]).remove();
-      }
-    }
     function checker(Bid)
     {
         id = Bid
         document.getElementById(id).classList.add("bg-red-500")
         document.getElementById('confirmBox').classList.remove("hidden")
+    }
+
+    function resetSelectAll(){
+      temp = document.getElementById('selectAllMain')
+      temp.checked = false
+      SelectAll(temp) 
     }
 
     function deleteAll()
@@ -30,7 +30,14 @@
       for (var i = 0; i < checkboxes.length; i++) {
         books.push(checkboxes[i].value)
       }
-      deleteBooks(books)
+      check = window.confirm("Are you sure you want to delete "+books.length+" books?")
+      if(check)
+      {
+        deleteBooks(books)
+      }
+      else{
+        resetSelectAll()
+      }
     }
 
     function SelectAll(source) {
@@ -93,6 +100,7 @@
                 }
 
                   changeBookQuantity(books.length)
+                  resetSelectAll()
             }
       });
    };
@@ -162,7 +170,7 @@ Books
         <div class="my-2 md:my-0">
           <span class="border-2 border-blue-700 rounded-lg px-2 py-2 self-center">
             Select All
-            <input type="checkbox" onclick="SelectAll(this)" class="form-checkbox h-5 w-5 text-red-600">
+            <input type="checkbox" id="selectAllMain" onclick="SelectAll(this)" class="form-checkbox h-5 w-5 text-red-600">
           </span>
           <button onclick="deleteAll()" class="ml-4 py-1 px-2 border-red-600 border-2 rounded-xl border bg-red-700 text-white hover:bg-red-900">Delete All</button>
         </div>
