@@ -45,13 +45,22 @@ Login
                                         class="border-2 w-full h-5 px-3 py-5 mt-2 hover:outline-none focus:outline-none focus:border-blue-600 rounded-md">
                                         <label class="block mt-3 font-semibold">Password <sup
                                             class="text-xs font-bold text-red-600">*</sup><label>
-                                            <input type="password" placeholder="LMS Admin Password" name="pswd"
+
+                                                <div class="w-full flex items-center">
+                                                    <div class="w-11/12">
+                                                        <input type="password" placeholder="LMS Admin Password" name="pswd"
                                                 class="border-2 w-full h-5 px-3 py-5 mt-2 hover:outline-none focus:outline-none focus:border-blue-600 rounded-md">
+                                                    </div>
+                                                    <div class="w-1/12">
+                                                        <span onclick="passEye(this)" class="w-full mt-2 p-2 fas fa-eye-slash text-xl"></span>
+                                                    </div>
+                                                </div>
+                                           
                                         
                                                 <div class="flex justify-between items-baseline">
                                         <button type="submit"
                                             class="mt-4 bg-blue-700 text-white py-1 px-2 font-semibold rounded-lg hover:bg-blue-800"><span
-                                                class="text-lg">Login →</span></button>
+                                                class="text-lg">Login <i class="fas text-xl fa-hand-point-right"></i></span></button>
                                         <a href="#"
                                             class="text-sm text-blue-700 hover:bg-blue-100 hover:underline">Forgot
                                             lname?</a>
@@ -67,6 +76,22 @@ Login
 </div>
 
 <script>
+
+    function passEye(btn)
+    {
+        if(btn.classList.contains('fa-eye-slash'))
+        {
+            btn.classList.remove('fa-eye-slash');
+            btn.classList.add('fa-eye');
+            document.forms["login"]["pswd"].type = 'text';
+        }
+        else
+        {
+            btn.classList.remove('fa-eye');
+            btn.classList.add('fa-eye-slash');
+            document.forms["login"]["pswd"].type = 'password';
+        }
+    }
 
     function validateForm() {
         var fname = document.forms["login"]["fname"];
