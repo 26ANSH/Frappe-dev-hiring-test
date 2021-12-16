@@ -101,9 +101,12 @@
 
   function searchBookByCode(code) 
   {
-    console.log(code)
+    const type = parseInt(document.getElementById('searchBy').value)
     const table = document.getElementById('booksTableContent')
     var rows = table.getElementsByTagName('tr')
+    if(type == 2){
+      code = code.toUpperCase()
+    }
     for (var i = 0; i < rows.length; i++)
      {
 
@@ -112,16 +115,11 @@
       }
       else {
         cells = rows[i].getElementsByTagName('td')
-        value = cells[1].textContent
-          if (parseInt(value) != code) 
-          {
-            if(!(rows[i].classList.contains("hidden")))
-            {
-              rows[i].classList.remove("table-row")
-              rows[i].classList.add("hidden")
-            }
-          }
-          else 
+        value = cells[type].textContent
+        if(type == 2){
+          value = value.toUpperCase()
+        }
+          if (value.startsWith(code)) 
           {
             if(rows[i].classList.contains("hidden"))
             {
@@ -129,9 +127,34 @@
               rows[i].classList.add("table-row")
             }
           }
+          else 
+          {
+            if(!(rows[i].classList.contains("hidden")))
+            {
+              rows[i].classList.remove("table-row")
+              rows[i].classList.add("hidden")
+            }
+          }
       }
     
      }
+  }
+
+  function selectTypeChange(type)
+  {
+    const searchInput = document.getElementById('searchInput')
+    type = parseInt(type)
+    if(type == 0){
+      searchInput.placeholder = "Search by Book ID"
+    }
+    else if(type == 1){
+      searchInput.placeholder = "Search by Book Code"
+    }
+    else if(type == 2){
+      searchInput.placeholder = "Search by Book title"
+    }
+
+    searchBookByCode(searchInput.value)
   }
 
 </script>
@@ -198,28 +221,35 @@ Books
 
     {% else %}
 
-    <div class="mx-auto w-11/12 flex items-center justify-between flex-col md:flex-row">
-      <div class="my-2 md:my-0">
-        <span class="border-2 border-blue-700 rounded-lg px-2 py-2">
-          Total Books in Database: <span id="bookQuantity">{{ books|length }}</span>
+    <div class="mx-auto w-full flex flex-wrap items-center justify-around flex-col md:flex-row">
+
+      <div class="w-full lg:w-1/2 my-2 flex justify-evenly">
+        <select onchange="selectTypeChange(this.value)" class="bg-blue-700 font-bold text-white" id="searchBy">
+          <option value="0">Book Id</option>
+          <option value="1" selected>Book code</option>
+          <option value="2">Book title</option>
+        </select>
+
+        <input id="searchInput" type="text" onkeyup="searchBookByCode(this.value)" placeholder="Search by Book Code"
+          class="w-2/3 px-1 py-1.5 rounded-lg border-2 border-blue-700 ring-blue-200">
         </span>
       </div>
 
-      <div class="my-2 w-full md:my-0 md:w-1/3">
-        <input type="text" onkeyup="searchBookByCode(this.value)" placeholder="Book code"
-          class="w-full px-1 py-2 rounded-lg border-2 border-red-500">
-        </span>
-      </div>
+      <div class="w-full lg:w-1/2 my-2 md:my-0 flex justify-center">
+        <div class="border-2 border-blue-700 rounded-lg px-2 py-1.5">
+          Books: <span id="bookQuantity">{{ books|length }}</span>
+        </div>
 
-      <div class="my-2 md:my-0">
-        <span class="border-2 border-blue-700 rounded-lg px-2 py-2 self-center">
-          Select All
+        <div class="ml-2 border-2 border-blue-700 rounded-lg px-2 py-1.5">
+          Select
           <input type="checkbox" id="selectAllMain" onclick="SelectAll(this)"
             class="form-checkbox h-5 w-5 text-red-600">
-        </span>
-        <button onclick="deleteAll()"
-          class="ml-4 py-1 px-2 border-red-600 border-2 rounded-xl border bg-red-700 text-white hover:bg-red-900"><i
+        </div>
+        <div>
+          <button onclick="deleteAll()"
+          class="ml-2 py-1.5 px-2 border-red-600 border-2 rounded-xl border bg-red-700 text-white hover:bg-red-900"><i
             class="fas fa-trash-alt"></i> Delete All</button>
+        </div>
       </div>
     </div>
 
@@ -230,7 +260,7 @@ Books
       <th class="p-3 text-left">Id</th>
       <th class="p-3 text-left">Code</th>
       <th class="p-3 text-left">Title</th>
-      <th class="p-3 text-left">Quantity</th>
+      <th class="p-3 text-left hidden md:table-cell">Quantity</th>
       <th class="p-3 text-left">Actions</th>
     </tr>
 
@@ -242,20 +272,20 @@ Books
           class="border-blue-900 border-2 border-t-0 mb-2 sm:mb-0 hover:bg-blue-50 mb-2">
           <td class="border-blue-900 border p-2 text-center">{{ book.id }}</td>
           <td class="border-blue-900 border p-2 text-center"><span id="bookcode">{{ book.book_id }}</span></td>
-          <td class="border-blue-900 border p-2 ">{{book.title }}</td>
+          <td class="border-blue-900 border p-2 ">{{ book.title }}</td>
           {% set remaining = book.quantity - book.issued %}
-          <td class="border-blue-900 border p-2 text-center">{{ remaining }}/{{ book.quantity }}</td>
+          <td class="border-blue-900 border p-2 text-center hidden md:table-cell">{{ remaining }}/{{ book.quantity }}</td>
           <td class="border-blue-900 p-1 text-base flex flex-col md:flex-row items-center justify-evenly">
             <div>
               <input type="checkbox" name="selectBook" value="{{ book.id }}" class="h-5 w-8">
             </div>
             <button onclick="checker('{{ book.id }}')"
-              class="mb-1 md:mr-1 text-xl py-1 px-2 border-red-600 border rounded-xl bg-red-700 text-white hover:bg-red-900">
+              class="mb-1 md:mr-1 text-lg py-1 px-2 border-red-600 border rounded-xl bg-red-700 text-white hover:bg-red-900">
               <i class="fas fa-trash"></i>
             </button>
 
             <a href="/books/book/{{book.book_id}}"
-              class="text-center text-xl py-1 px-2 border-green-600 border rounded-xl bg-green-700 text-white hover:bg-green-900">
+              class="text-center text-lg py-1 px-2 border-green-600 border rounded-xl bg-green-700 text-white hover:bg-green-900">
               <i class="fas fa-edit"></i>
             </a>
           </td>
