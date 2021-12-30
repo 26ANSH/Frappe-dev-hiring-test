@@ -1,8 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session, jsonify
-import requests
 from .models import *
 from . import db, PASSWORD
-import json
 
 views = Blueprint('views', __name__)
 
@@ -55,33 +53,3 @@ def logout():
     if "logged_in" in session:
         session.clear()
         return redirect(url_for('views.index', alert="Logged out Successfully."))
-
-# @views.route('/member')
-# def member():
-#     member = {
-#         'name':'Ansh Vidyabhanu',
-#         'email':'anshvidyabhanu8@gmail.com',
-#         'credit':100
-#     }
-#     member = Members(member)
-#     db.session.add(member)
-#     db.session.commit()
-#     member = Members.query.get(1)
-#     for i in range(1,3):
-#         member.books.append(Books.query.get(i))
-#     db.session.commit()
-#     return jsonify({'Member Created':member.id})
-
-
-# @views.route('/issue')
-# def issue():
-#     member = Members.query.get(1)
-#     return jsonify({'books': len(member.books)})
-
-# @views.route('/issues')
-# def issues():
-#     isues = db.session.execute(select(issued)).all()
-#     all_issues = {'done':'ok'}
-#     for issue in isues:
-#         print(issue.memberID,"=",issue.bookID,"Status =",issue.status)
-#     return jsonify({'books': all_issues})

@@ -1,0 +1,52 @@
+{% extends "template.html" %}
+
+{% block script %}
+<script>
+
+    document.getElementById("user").classList.remove("bg-blue-900")
+    document.getElementById("user").classList.add("bg-blue-500")
+    document.getElementById("user-icon").classList.remove("text-blue-600")
+
+</script>
+{% endblock %}
+
+{% block title %}
+Users
+{% endblock %}
+
+{% block content %}
+All Users in the db
+
+
+<table id="userTable" class="w-full flex-no-wrap sm:bg-white overflow-hidden sm:shadow-lg my-5">
+
+    <tr
+    class="text-white bg-blue-700">
+    <th class="p-3 text-left">Id</th>
+    <th class="p-3 text-left">Member</th>
+    <th class="p-3 text-left">Books</th>
+    <th class="p-3 text-left">Issued</th>
+    <th class="p-3 text-left">status</th>
+  </tr>
+
+    <tbody id="usersTableContent">
+
+      {% for t in transactions %}
+
+      <tr id="{{ t.id }}" class="border-blue-900 border-2 border-t-0 mb-2 sm:mb-0 hover:bg-blue-50 mb-2">
+        <td class="border-blue-900 border p-2 text-center">{{ t.id }}</td>
+        <td class="border-blue-900 border p-2 text-center">{{ t.member_id }}</td>
+        <td class="border-blue-900 border p-2 text-center">{{ t.book_id }}</td>
+        <td class="border-blue-900 border p-2 text-center">{{ t.issued.date() }}</td>
+        <td class="border-blue-900 border p-2 text-center">{{ t.status }}</td>
+  
+  o
+      </tr>
+
+      {% endfor %}
+
+    </tbody>
+
+  </table>
+
+{% endblock %}

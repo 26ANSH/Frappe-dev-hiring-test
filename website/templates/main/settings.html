@@ -1,25 +1,17 @@
-{% extends "base.html" %}
+{% extends "template.html" %}
 
 {% block title %}
-Login
+Settings
 {% endblock %}
+{% block content %}
 
-{% block main %}
+<div class="flex flex-col-reverse md:flex-row justify-center p-2">
 
-{% if alert %}
-<p id="alert" class="rounded-md font-bold text-xl italic bg-green-100 text-green-700 mt-3 mx-4 p-2">{{ alert }}<button
-        onclick="clearalert()" class="text-white bg-gray-500 rounded-full float-right px-2 hover:bg-gray-600"> X
-    </button></p>
-{% endif %}
-
-
-<div class="flex flex-row justify-center p-2">
-
-    <div class="w-2/4 mr-2 hidden md:block lg:block xl:block">
+    <div class="w-full md:w-2/3">
         <img src="{{ url_for('static', filename='settings.svg')}}">
     </div>
 
-    <div class="py-3 text-center self-center">
+    <div class="text-center self-center">
         <span class="text-2xl font-bold dark:text-white">👨‍💻 Profile</span>
         <div class="relative mt-4 bg-white shadow-lg sm:rounded-lg text-left dark:bg-gray-200 rounded-t-md ">
             <div class="h-3 bg-blue-700 dark:bg-blue-400 rounded-t-md"></div>

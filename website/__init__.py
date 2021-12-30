@@ -21,7 +21,8 @@ def start_app():
     from . views import views, page_not_found
     from . api import api
     from . books import books
-    from .models import Books, Members, issued
+    from . members import member
+    from .models import Books, Members, Issued,Payment
 
     create_database(app)
     db.create_all(app=app)
@@ -30,4 +31,5 @@ def start_app():
     app.register_blueprint(views, url_prefix='/')
     app.register_blueprint(api, url_prefix='/api')
     app.register_blueprint(books, url_prefix='/books')
+    app.register_blueprint(member, url_prefix='/members')
     return app

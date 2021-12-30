@@ -1,0 +1,55 @@
+{% extends "template.html" %}
+
+{% block script %}
+<script>
+
+    document.getElementById("user").classList.remove("bg-blue-900")
+    document.getElementById("user").classList.add("bg-blue-500")
+    document.getElementById("user-icon").classList.remove("text-blue-600")
+
+</script>
+{% endblock %}
+
+{% block title %}
+Users
+{% endblock %}
+
+{% block content %}
+All Users in the db
+
+
+<table id="userTable" class="w-full flex-no-wrap sm:bg-white overflow-hidden sm:shadow-lg my-5">
+
+    <tr
+    class="text-white bg-blue-700">
+    <th class="p-3 text-left">Id</th>
+    <th class="p-3 text-left">name</th>
+    <th class="p-3 text-left">email</th>
+    <th class="p-3 text-left">credit</th>
+    <th class="p-3 text-left">payments</th>
+  </tr>
+
+    <tbody id="usersTableContent">
+
+      {% for user in users %}
+
+      <tr id="{{ user.id }}" class="border-blue-900 border-2 border-t-0 mb-2 sm:mb-0 hover:bg-blue-50 mb-2">
+        <td class="border-blue-900 border p-2 text-center">{{ user.id }}</td>
+        <td class="border-blue-900 border p-2 text-center">{{ user.name }}</td>
+        <td class="border-blue-900 border p-2 text-center">{{ user.email }}</td>
+        <td class="border-blue-900 border p-2 text-center">{{ user.credit }}</td>
+        {% if user.payments[0] %}
+        <td class="border-blue-900 border p-2 text-center">{{ user.payments[0].amount }}</td>
+        {% else %}
+        <td class="border-blue-900 border p-2 text-center">No payments</td>
+        {% endif %}
+  
+      </tr>
+
+      {% endfor %}
+
+    </tbody>
+
+  </table>
+
+{% endblock %}
