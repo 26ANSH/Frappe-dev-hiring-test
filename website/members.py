@@ -3,17 +3,47 @@ import requests
 from .models import *
 import json
 from . import db
+import datetime
 
 
 member = Blueprint('members', __name__)
 
+def issue(member, book, status):
+    Book = Books.query.get(book)
+    Member = Members.query.get(member)
+
+    if Book is None:
+            return 400, "Book not found"
+    elif Book.quantity - Book.issued <= 0:
+            return 400, "Book not available"
+
+
+    if Member is None:
+        return 400, "Member not found"
+    
+    issued = Issued.query.filter_by(member_id=member, book_id=book, status=True).first()
+    
+    if status == True:
+        if issued:
+            return 400, 'Book Already Issued'
+        else:
+            issued = Issued(member, book)
+            Member.credit = Member.credit - 20
+            Member.books.append(issued)
+            db.session.commit()
+            return 200, 'Book Issued'
+    else:
+        if not issued:
+            return 400, 'Book not Issued'
+        else:
+            issued.returned = datetime.datetime.now()
+            issued.status = False
+            db.session.commit()
+            return 200, 'Book Returned'
+
 @member.route('/')
 def index():
     if "logged_in" in session:
-        # id = 2
-        # member = Members.query.get(id)
-        # member.payments.append(Payment(id, 1000))
-        # db.session.commit()
         return render_template('members/index.html', users=Members.query.all())
     else:
         return redirect(url_for('views.index', error="Please login to view this page."))
@@ -21,12 +51,30 @@ def index():
 @member.route('/transactions')
 def transactions():
     if "logged_in" in session:
-        books= [str(book.id) for book in Books.query.with_entities(Books.id)]
-        # print(books)
-        return render_template('members/transactions.html', transactions=Issued.query.all(),  books = books)
+        # books= [str(book.id) for book in Books.query.with_entities(Books.id)] 
+        if request.method == 'GET':
+            return render_template('members/transactions.html', transactions=Issued.query.all())
+        else:
+            params = json.loads(request.data)
+            member_id = params['member_id']
+            book_code = params['book_code']
+            status = params['status']
+            code, msg = issue(member_id, book_code, status)
+            return jsonify(msg=msg, code=code), code
     else:
         return redirect(url_for('views.index', error="Please login to view this page."))
-      
+
+@member.get('/member/<int:id>')
+def get(id):
+    if "logged_in" in session:
+        user = Members.query.get(id)
+        if user is None:
+            return jsonify(error="User not found"), 404
+        else:
+            return jsonify(user=user.serialize), 200
+    else:
+        return redirect(url_for('views.index', error="Please login to view this page."))
+
 @member.route('/payments')
 def payments():
     if "logged_in" in session:
@@ -38,18 +86,24 @@ def payments():
 def newUser():
     if "logged_in" in session:
         if request.method == 'POST':
+            params = json.loads(request.data)
             new = {
-                'name': request.form['name'],
-                'email': request.form['email'],
-                'credit': request.form['credit']
-            }
-            new_member = Members(new)
-            print(new_member)
-            db.session.add(new_member)
-            db.session.commit()
-            return render_template('members/newuser.html', user = new_member)
-
-        return render_template('members/newuser.html')
+            'name':params['name'],
+            'email':params['email'],
+            'credit':0
+            }    
+            try:
+                new_member = Members(new)
+                db.session.add(new_member)
+                db.session.commit()
+                member = Members.query.get(new_member.id)
+                member.payments.append(Payment(new_member.id, int(params['credit'])))
+                db.session.commit()
+                return jsonify(user=member.serialize, result=200), 200
+            except:
+                return jsonify(result="User Email '{}' already Exists".format(new['email'])), 200
+        else:
+            return render_template('members/newuser.html')
     else:
         return redirect(url_for('views.index', error="Please login to view this page."))
 

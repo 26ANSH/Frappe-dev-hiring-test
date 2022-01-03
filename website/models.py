@@ -3,7 +3,7 @@ from sqlalchemy.sql import func, select
 class Books(db.Model):
     __tablename__ = 'books'
     id       = db.Column(db.Integer, primary_key=True)
-    isbn     = db.Column(db.Integer, nullable=False, unique=True)
+    isbn     = db.Column(db.String, nullable=False, unique=True)
     quantity = db.Column(db.Integer, nullable=False)
     issued   = db.Column(db.Integer, nullable=False, default=0)
     title    = db.Column(db.String(100), nullable=False)
@@ -34,9 +34,12 @@ class Members(db.Model):
     __tablename__ = 'members'
     id       = db.Column(db.Integer, primary_key=True)
     name     = db.Column(db.String(100), nullable=False)
-    email    = db.Column(db.String(100), nullable=False)
+    email    = db.Column(db.String(100), nullable=False, unique=True)
     credit   = db.Column(db.Integer, nullable=False)
     payments = db.relationship('Payment',backref='Members', lazy='dynamic')
+    books    = db.relationship('Issued',backref='Members', lazy='dynamic')
+    created  = db.Column(db.DateTime(timezone=True), default=func.now(), nullable=False)
+
 
     def __init__(self, member):
         self.name = member['name']
@@ -75,7 +78,6 @@ class Payment(db.Model):
 
     def __init__(self, id, amount):
         self.amount = amount
-        print(self.member_id)
         member = Members.query.filter_by(id=id).first()
         member.credit = member.credit + amount
         db.session.commit()

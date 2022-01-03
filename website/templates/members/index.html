@@ -26,7 +26,6 @@ All Users in the db
     <th class="p-3 text-left">name</th>
     <th class="p-3 text-left">email</th>
     <th class="p-3 text-left">credit</th>
-    <th class="p-3 text-left">payments</th>
   </tr>
 
     <tbody id="usersTableContent">
@@ -38,12 +37,6 @@ All Users in the db
         <td class="border-blue-900 border p-2 text-center">{{ user.name }}</td>
         <td class="border-blue-900 border p-2 text-center">{{ user.email }}</td>
         <td class="border-blue-900 border p-2 text-center">{{ user.credit }}</td>
-        {% if user.payments[0] %}
-        <td class="border-blue-900 border p-2 text-center">{{ user.payments[0].amount }}</td>
-        {% else %}
-        <td class="border-blue-900 border p-2 text-center">No payments</td>
-        {% endif %}
-  
       </tr>
 
       {% endfor %}
