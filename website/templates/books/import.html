@@ -57,7 +57,7 @@
       );
       const target = btn.nextElementSibling;
       let value = Number(target.value);
-        if (value > 0){
+        if (value > 1){
             value--;
             target.value = value;
         }
@@ -97,43 +97,43 @@ Import Books
 
 {% block content %}
 
-<div class="mt-2 mx-2 text-xl text-white divide-y-2 divide-dashed">
-    <div class="flex flex-col md:flex-row justify-evenly items-center bg-blue-700 py-4 px-2 rounded-md">
+<div class="mt-2 mx-2 text-xl text-black divide-y-2 divide-dashed divide-blue-900">
+    <div class="flex flex-col md:flex-row justify-evenly items-center py-4 px-2 rounded-md">
         <label for="title" class="mr-1 font-bold ">Title:</label>
         <input id="bookTitle"
-            class="text-black w-full md:w-2/3 py-1 px-2 rounded-lg border-2 border-white border-solid focus:border-double focus:border-4"
+            class="text-black w-full md:w-2/3 py-1 px-2 rounded-lg border-2 border-blue-900 border-solid focus:border-double focus:border-4"
             type="text" placeholder="Book Title">
     </div>
 
-    <div class="flex flex-col md:flex-row justify-evenly items-center bg-blue-700 py-4 px-2 rounded-md">
+    <div class="flex flex-col md:flex-row justify-evenly items-center py-4 px-2 rounded-md">
         <label for="author" class="mr-1 font-bold ">Author:</label>
         <input id="bookAuthor"
-            class="text-black w-full md:w-2/3 py-1 px-2 rounded-lg border-2 border-white border-solid focus:border-double focus:border-4"
+            class="text-black w-full md:w-2/3 py-1 px-2 rounded-lg border-2 border-blue-900 border-solid focus:border-double focus:border-4"
             type="text" placeholder="Book Author">
     </div>
 
-    <div class="flex flex-col md:flex-row justify-evenly items-center bg-blue-700 py-4 px-2 rounded-md">
+    <div class="flex flex-col md:flex-row justify-evenly items-center py-4 px-2 rounded-md">
         <label for="publisher" class="mr-1 font-bold ">Publisher:</label>
         <input id="bookPublisher"
-            class="text-black w-full md:w-2/3 py-1 px-2 rounded-lg border-2 border-white border-solid focus:border-double focus:border-4"
+            class="text-black w-full md:w-2/3 py-1 px-2 rounded-lg border-2 border-blue-900 border-solid focus:border-double focus:border-4"
             type="text" placeholder="Book Publisher">
     </div>
 
-    <div class="flex flex-col md:flex-row justify-evenly items-center bg-blue-700 py-4 px-2 rounded-md">
+    <div class="flex flex-col md:flex-row justify-evenly items-center py-4 px-2 rounded-md">
 
         <label for="title" class="mr-1 font-bold">Quantity:</label>
         <!-- component -->
-        <div class="">
-            <div class="flex flex-row h-10 w-full rounded-lg relative bg-transparent mt-1">
+        <div class="w-full md:w-2/3 flex flex-col md:flex-row justify-between">
+            <div class="w-full md:w-1/2 flex flex-row h-10 w-full rounded-lg relative bg-transparent mt-1">
                 <button data-action="decrement"
-                    class=" bg-yellow-300 text-yellow-600 hover:text-yellow-700 hover:bg-yellow-400 h-full w-20 rounded-l cursor-pointer outline-none">
+                    class=" bg-blue-300 text-blue-600 hover:text-blue-700 hover:bg-blue-400 h-full w-20 rounded-l cursor-pointer outline-none">
                     <span class="m-auto text-2xl font-bold">−</span>
                 </button>
                 <input type="number" id="bookQuantity"
-                    class="outline-none focus:outline-none text-center w-full bg-yellow-300 font-semibold text-md hover:text-black focus:text-black  md:text-basecursor-default flex items-center text-yellow-700  outline-none"
-                    name="custom-input-number" value="0">
+                    class="outline-none focus:outline-none text-center w-full bg-blue-300 font-semibold text-md hover:text-black focus:text-black  md:text-basecursor-default flex items-center text-blue-700  outline-none"
+                    name="custom-input-number" value="1">
                 <button data-action="increment"
-                    class="bg-yellow-300 text-yellow-600 hover:text-yellow-700 hover:bg-yellow-400 h-full w-20 rounded-r cursor-pointer">
+                    class="bg-blue-300 text-blue-600 hover:text-blue-700 hover:bg-blue-400 h-full w-20 rounded-r cursor-pointer">
                     <span class="m-auto text-2xl font-bold">+</span>
                 </button>
             </div>
@@ -141,21 +141,21 @@ Import Books
 
     </div>
 
-    <div class="flex flex-col md:flex-row justify-around items-center bg-blue-700 py-4 px-2 rounded-md">
+    <div class="flex flex-col md:flex-row justify-around items-center py-4 px-2 rounded-md">
 
         <label for="title" class="mr-1 font-bold">Quantity per Book:</label>
         <!-- component -->
-        <div class="">
-            <div class="flex flex-row h-10 w-full rounded-lg relative bg-transparent mt-1">
+        <div class="w-full md:w-2/3 flex flex-col md:flex-row justify-between">
+            <div class="w-full md:w-1/2 flex flex-row h-10 w-full rounded-lg relative bg-transparent mt-1">
                 <button data-action="decrement"
-                    class=" bg-yellow-300 text-yellow-600 hover:text-yellow-700 hover:bg-yellow-400 h-full w-20 rounded-l cursor-pointer outline-none">
+                    class=" bg-blue-300 text-blue-600 hover:text-blue-700 hover:bg-blue-400 h-full w-20 rounded-l cursor-pointer outline-none">
                     <span class="m-auto text-2xl font-bold">−</span>
                 </button>
                 <input type="number" id="bookQuantityPerBook"
-                    class="outline-none focus:outline-none text-center w-full bg-yellow-300 font-semibold text-md hover:text-black focus:text-black  md:text-basecursor-default flex items-center text-yellow-700  outline-none"
+                    class="outline-none focus:outline-none text-center w-full bg-blue-300 font-semibold text-md hover:text-black focus:text-black  md:text-basecursor-default flex items-center text-blue-700  outline-none"
                     name="custom-input-number" value="1">
                 <button data-action="increment"
-                    class="bg-yellow-300 text-yellow-600 hover:text-yellow-700 hover:bg-yellow-400 h-full w-20 rounded-r cursor-pointer">
+                    class="bg-blue-300 text-blue-600 hover:text-blue-700 hover:bg-blue-400 h-full w-20 rounded-r cursor-pointer">
                     <span class="m-auto text-2xl font-bold">+</span>
                 </button>
             </div>

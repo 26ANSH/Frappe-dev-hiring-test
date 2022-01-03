@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session, jsonify
 import requests
-from .models import Books
+from .models import Books, Members
 import json
 from . import db
 
@@ -19,7 +19,8 @@ def index():
 def book(id):
     if "logged_in" in session:
         book = Books.query.filter_by(book_id=id).first()
-        return render_template('books/book.html', book=book)
+        members= [str(member.id) for member in Members.query.with_entities(Members.id)] 
+        return render_template('books/book.html', book=book, members = members)
     else:
         return redirect(url_for('views.index', error="Please login to view this page."))
 
