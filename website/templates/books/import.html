@@ -37,8 +37,16 @@
                     quantity: bookQuantity,
                     perbook: bookQuantityPerBook
                 })
-            }).then(function (response) {
-                return response.json();
+            }).then(function (response) 
+            {
+                if(response.status == 200)
+                {
+                    return response.json();
+                }
+                else
+                {
+                    result.innerHTML = "Error adding books | Insufficient Quantity";
+                }
             }).then(function (data) {
                     result.innerHTML = data.added + "/" + bookQuantity + " Books added";
                     toggleOnSubmit()

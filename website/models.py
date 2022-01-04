@@ -1,5 +1,8 @@
 from . import db
 from sqlalchemy.sql import func, select
+import datetime
+INIT_RENT = 100
+DAILY_RENT = 25
 class Books(db.Model):
     __tablename__ = 'books'
     id       = db.Column(db.Integer, primary_key=True)
@@ -52,8 +55,8 @@ class Members(db.Model):
        return {
            'id'         : self.id,
            'name'       : self.name,
-           'email'  : self.email,
-           'credit': self.credit
+           'email'      : self.email,
+           'credit'     : self.credit
        }
 
 class Issued(db.Model):
@@ -64,11 +67,29 @@ class Issued(db.Model):
     issued = db.Column(db.DateTime(timezone=True), default=func.now(), nullable=False)
     returned = db.Column(db.DateTime(timezone=True))
     status = db.Column(db.Boolean, nullable=False, default=True)
-    rent  = db.Column(db.Integer, default=20, nullable=False)
+    rent  = db.Column(db.Integer, default=INIT_RENT, nullable=False)
 
     def __init__(self, member, book):
         self.member_id = member
         self.book_id = book
+
+    @property
+    def serialize(self):
+       """Return object data in easily serializable format"""
+       return {
+           'id'         : self.id,
+           'member'       : self.member_id,
+           'book'  : self.book_id,
+           'status': self.status,
+           'issued' : self.issued, 
+           'rent': self.rent
+       }
+
+    @property
+    def update(self):
+       now = datetime.datetime.now()
+       self.rent += (self.issued.date() - now.date()).days * DAILY_RENT
+       db.session.commit()
 class Payment(db.Model):
     __tablename__ = 'payment'
     id       = db.Column(db.Integer, primary_key=True)

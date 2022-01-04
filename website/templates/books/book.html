@@ -7,47 +7,126 @@
     document.getElementById("books").classList.add("bg-blue-500")
     document.getElementById("books-icon").classList.remove("text-blue-600")
 
+    function toggleAvail()
+    {
+        quantity = parseInt(document.getElementById('bookQuantity').innerHTML)
+        issue = parseInt(document.getElementById('bookIssue').innerHTML)
+        available = document.getElementById('bookAvailability')
 
-    function deleteBook(confirm) {
-        document.getElementById('confirmBox').classList.add("hidden")
-        if (confirm) {
-          fetch('/books/delete-book', {
-            method: 'DELETE',
+        if(issue >= quantity)
+        {
+            if(!(available.classList.contains('text-red-500')))
+            {
+                available.classList.remove('text-green-500')
+                available.classList.add('text-red-500')
+            }
+
+            available.innerHTML = `Not Available <i class="text-lg fas fa-thumbs-down"></i>`
+        }
+        else
+        {
+            if(!(available.classList.contains('text-green-500')))
+            {
+                available.classList.remove('text-red-500')
+                available.classList.add('text-green-500')
+            }
+
+            available.innerHTML = `Available <i class="text-lg fas fa-thumbs-up"></i>`
+        }
+    }
+
+    function issueBook()
+    {
+        member = document.getElementById("member").value
+        fetch('/members/transactions', {
+            method: 'POST',
             headers: {
               'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-              id: id
+              member_id: member,
+              book_id: {{ book.id }},
+              status: true
             })
           }).then(function (response) {
             return response.json();
           }).then(function (data) {
-            if (data.success) {
-              document.getElementById(id).remove();
-              changeBookQuantity(1)
-            }
+              if(data.code == 200)
+              {
+                  document.getElementById('bookIssue').innerHTML = parseInt(document.getElementById('bookIssue').innerHTML) + 1
+                  toggleAvail()
+                  const t = data.msg
+                  var date = new Date(t.issued)
+                  date = date.toISOString().substring(0, 10);
+                  document.getElementById('usersTableContent').innerHTML += ` <tr id="${t.id}" class="border-blue-900 border-2 border-t-0 mb-2 sm:mb-0 hover:bg-blue-50 mb-2">
+                    <td class="border-blue-900 border p-2 text-center">${t.id}</td>
+                    <td class="border-blue-900 border p-2 text-center">${t.member} </td>
+                    <td class="border-blue-900 border p-2 text-center">${date}</td>
+                    <td class="border-blue-900 border p-2 text-center">${t.status} </td>
+                    <td class="border-blue-900 border p-2 text-center">${ t.rent }</td>
+            <td class="border-blue-900 border p-2 text-center">
+                <button onclick="returnBook(${t.id })" class="text-white rounded-md font-bold px-2 hover:bg-red-600 py-1 bg-red-700">Return</button>
+            </td>
+                  </tr>`
+              }
+              else{
+                  document.getElementById('result').innerHTML = data.msg
+              }
           });
-        }
-        else {
-          document.getElementById(id).classList.remove("bg-red-500")
-        }
-      };
-
+    }
 
       function selectTypeChange(id)
       {
-          fetch('/members/member/'+id, {
+          fetch('/api/member/'+id, {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json'
             }
-          }).then(function (response) {
-            return response.json();
-          }).then(function (data) {
-            document.getElementById('details').textContent = data.user.name
+          }).then(function (response)
+           {
+               if(response.status == 200)
+               {
+                   return response.json();
+               }
+               else
+               {
+                document.getElementById('details').textContent = "Wrong Member ID"
+                return false;
+               }
+          }).then(function (data) 
+          {
+              if (data != false)
+              {
+                document.getElementById('details').textContent = data.user.name +" | Credits: " + data.user.credit
+              }
           });
       }
 
+      function returnBook(id)
+      {
+        fetch('/members/transactions', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              id: id,
+              status: false
+            })
+          }).then(function (response) {
+            return response.json();
+          }).then(function (data) {
+              if(data.code == 200)
+              {
+                  document.getElementById(id).remove()
+                  document.getElementById('bookIssue').innerHTML = parseInt(document.getElementById('bookIssue').innerHTML) - 1
+                  toggleAvail()
+              }
+              else{
+                  document.getElementById('result').innerHTML = data.msg
+              }
+          });
+      }
 </script>
 {% endblock %}
 
@@ -83,18 +162,18 @@ Book #{{ book.id }}
                 </tr>
                 <tr>
                     <td class="border border-black p-1 px-2 font-bold">Quantity</td>
-                    <td class="border border-black p-1 px-2 ">{{ book.quantity }}</td>
+                    <td id="bookQuantity" class="border border-black p-1 px-2 ">{{ book.quantity }}</td>
                 </tr>
                 <tr>
                     <td class="border border-black p-1 px-2 font-bold">Issued</td>
-                    <td class="border border-black p-1 px-2 ">{{ book.issued }}</td>
+                    <td id="bookIssue" class="border border-black p-1 px-2">{{ book.issued }}</td>
                 </tr>
                 <tr>
                     <td class="border border-black p-1 px-2 font-bold">Availability</td>
                     {% if book.issued >= book.quantity %}
-                        <td class="border border-black p-1 px-2 text-red-500 font-bold">Not Available <i class="text-lg fas fa-thumbs-down"></i>/td>
+                        <td id="bookAvailability" class="border border-black p-1 px-2 text-red-500 font-bold">Not Available <i class="text-lg fas fa-thumbs-down"></i></td>
                     {% else %}
-                        <td class="border border-black p-1 px-2 text-green-500 p-1 px-2 font-bold">Available <i class="text-lg fas fa-thumbs-up"></i></td>
+                        <td id="bookAvailability" class="border border-black p-1 px-2 text-green-500 p-1 px-2 font-bold">Available <i class="text-lg fas fa-thumbs-up"></i></td>
                     {% endif %}
                 </tr>
                 <tr>
@@ -106,7 +185,7 @@ Book #{{ book.id }}
     </div>
     <hr class="mt-2">
     <div class="mt-4">
-       <div class="w-full text-xl bg-blue-900 text-white text-center py-1">Issue this Book</div>
+       <div class="w-full text-xl bg-blue-900 text-white text-center py-1 rounded-md">Issue this Book</div>
        <table class="mt-1 border-collapse border border-black p-1 px-2 w-full p-2">
         <tr class="flex flex-col md:table-row">
             <td class="w-full md:w-2/5 lg:w-1/4 border border-black p-1 px-2 font-bold">Member</td>
@@ -117,11 +196,48 @@ Book #{{ book.id }}
                         <option value="{{ member }}">{{ member }}</option>
                     {% endfor %}
                   </select>
-                  <span id="details" class="ml-0 mt-2 lg:mt-0 lg:ml-2"></span>
+                  <span id="details" class="px-4 mt-2 lg:mt-0">Select Member by Id to Issue the Book</span>
             </td>
         </tr>
         </table>
 
+        <div class="flex flex-col lg:flex-row my-2">
+            <button onclick="issueBook()"class="py-1 px-2 bg-blue-900 shadow-md text-white rounded-lg text-lg hover:bg-blue-800">Issue</button>
+            <p class="py-1 px-2" id="result">Initial Book rent <i class="fas fa-rupee-sign"></i>100, then <i class="fas fa-rupee-sign"></i>25 per day</p>
+        </div>
+
+
+        <div class="w-full text-xl bg-blue-900 text-white text-center py-1 mt-4 rounded-md">Current Issues</div>
+
+        <table id="userTable" class="w-full flex-no-wrap sm:bg-white overflow-hidden sm:shadow-lg my-5">
+        <tr class="text-white bg-blue-700">
+        <th class="p-2 text-left">Id</th>
+        <th class="p-2 text-left border-l ">Member</th>
+        <th class="p-2 text-left border-l ">Issued</th>
+        <th class="p-2 text-left border-l">status</th>
+        <th class="p-2 text-left border-l">Rent</th>
+        <th class="p-2 text-left border-l">Return</th>
+      </tr>
+    
+        <tbody id="usersTableContent">
+    
+          {% for t in issues %}
+    
+          <tr id="{{ t.id }}" class="border-blue-900 border-2 border-t-0 mb-2 sm:mb-0 hover:bg-blue-50 mb-2">
+            <td class="border-blue-900 border p-2 text-center">{{ t.id }}</td>
+            <td class="border-blue-900 border p-2 text-center">{{ t.member_id }}</td>
+            <td class="border-blue-900 border p-2 text-center">{{ t.issued.date() }}</td>
+            <td class="border-blue-900 border p-2 text-center">{{ t.status }}</td>
+            <td class="border-blue-900 border p-2 text-center">{{ t.rent }}</td>
+            <td class="border-blue-900 border p-2 text-center">
+                <button onclick="returnBook({{ t.id }})" class="text-white rounded-md font-bold px-2 hover:bg-red-600 py-1 bg-red-700">Return</button>
+            </td>
+          </tr>
+    
+          {% endfor %}
+    
+        </tbody>
+        </table>
     </div>
     {% else %}
         <div class="text-center">

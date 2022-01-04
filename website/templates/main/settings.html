@@ -16,16 +16,16 @@ Settings
         <div class="relative mt-4 bg-white shadow-lg sm:rounded-lg text-left dark:bg-gray-200 rounded-t-md ">
             <div class="h-3 bg-blue-700 dark:bg-blue-400 rounded-t-md"></div>
 
-            <form method="post" onsubmit="return validateForm()" name="login">
+            <form method="post" onsubmit="return validateForm();">
                 <div class="py-6 px-8 pt-2">
                     <p id="form-error" class="text-red-500 text-sm italic mb-3 bg-red-50 rounded-md"></p>
 
                     <label class="block font-semibold ">First Name<label>
-                            <input type="text" id="lname" placeholder="First Name" name="fname"
+                            <input type="text" id="fname" placeholder="First Name" name="fname"
                                 value="{{ session['first_name'] }}"
                                 class=" border-2 w-full h-5 px-3 py-5 mt-2 hover:outline-none focus:outline-none focus:border-blue-600 rounded-md">
                             <label class="block mt-3 font-semibold"> Last Name<label>
-                                    <input type="lname" placeholder="Last Name" id="fname" name="lname"
+                                    <input type="lname" placeholder="Last Name" id="lname" name="lname"
                                         value="{{ session['last_name'] }}"
                                         class="border-2 w-full h-5 px-3 py-5 mt-2 hover:outline-none focus:outline-none focus:border-blue-600 rounded-md">
                                     <div class="flex justify-between items-baseline">
@@ -52,24 +52,37 @@ Settings
 
    function validateForm() 
    {
-        var email = document.forms["login"]["fname"];
-        var password = document.forms["login"]["lname"];
-        if (email.value == "" || password.value == "") 
+        const Ofname = "{{ session['first_name'] }}";
+        const Olname = "{{ session['last_name'] }}";
+
+        var fname = document.getElementById("fname")
+        var lname = ddocument.getElementById("lname")
+        conosle.log(fname, lname)
+
+        if(Ofname == fname.value || lname.value == Olname)
+        {
+            document.getElementById("form-error").innerHTML = "Same Value no change";
+            document.getElementById("form-error").classList.add("p-1.5");
+
+            return false;
+        }
+        else if (fname.value == "" || lname.value == "") 
         {
             document.getElementById("form-error").innerHTML = "Feilds Cannot be Empty";
             document.getElementById("form-error").classList.add("p-1.5");
 
-            if (password.value == "") {
-                password.classList.add("border-red-600");
+            if (lname.value == "") {
+                lname.classList.add("border-red-600");
             }
-            if (email.value == "") {
-                email.classList.add("border-red-600");
+            if (fname.value == "") {
+                fname.classList.add("border-red-600");
             }
 
             return false;
         }
-
-        return true;
+        else{
+            return false
+        }
     }
 </script>
 

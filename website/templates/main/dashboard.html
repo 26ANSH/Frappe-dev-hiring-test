@@ -12,8 +12,22 @@
 
 {% block title %}
 Dashboard
+
 {% endblock %}
 
 {% block content %}
-This is Dashboard
+<div class="mx-2 mt-4 flex flex-col md:flex-row justify-evenly">
+    <div class="shadow-lg rounded bg-blue-100 inline-flex w-full md:w-2/5">
+        <img class="h-52" src="{{ url_for('static', filename='Library.svg')}}">
+        <span class="h-52 w-1/2 text-3xl font-bold text-blue-900 flex justify-center items-center">
+            {{books}}
+        </span>
+    </div>
+    <div class="mt-2 md:mt-0 shadow-lg rounded bg-blue-100 inline flex w-full md:w-2/5">
+        <img class="h-52 w-1/2" src="{{ url_for('static', filename='member.svg')}}">
+        <span class="h-52 w-1/2 text-3xl font-bold text-blue-900 flex justify-center items-center">
+            {{members}}
+        </span>
+    </div>
+</div>
 {% endblock %}
