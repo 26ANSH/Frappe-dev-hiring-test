@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session, jsonify
 from .models import *
 from . import db, PASSWORD
+from datetime import date
 
 views = Blueprint('views', __name__)
 
@@ -44,7 +45,13 @@ def profile():
 @views.route('/dashboard', methods=['GET'])
 def dashboard():
     if "logged_in" in session:
-        return render_template("main/dashboard.html", books = Books.query.count(), members = Members.query.count())
+        sum = Payment.query.with_entities(func.sum(Payment.amount).label('total')).filter(func.date(Payment.date) == date.today()).first().total
+        if sum == None:
+            sum = 0
+        print(date.today())
+        # issues = Issued.query.filter(func.date(Issued.issued) == date.today()).filter(Issued.status == True).count()
+        issues = Issued.query.filter(func.date(Issued.issued) == date.today()).count()
+        return render_template("main/dashboard.html", books = Books.query.count(),issues=issues, payment=sum, members = Members.query.count())
     else:
         return redirect(url_for('views.index', error="Please login to view this page."))
 
