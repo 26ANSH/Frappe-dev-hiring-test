@@ -53,3 +53,5 @@ def logout():
     if "logged_in" in session:
         session.clear()
         return redirect(url_for('views.index', alert="Logged out Successfully."))
+    else:
+        return redirect(url_for('views.index', error="Please login to view this page."))

@@ -14,28 +14,23 @@ def intersection(lst1, lst2):
 
 @api.get('/get_books')
 def get_books():
-    if "logged_in" in session:
-
-        if request.args.get('page'):
-            page = request.args.get('page')
-        else:
-            page = 1
-
-        if request.args.get('title') != '' and request.args.get('authors') != '':
-            bookByTitle = requests.get(URL+f"{page}&title={request.args.get('title')}").json()['message']
-            bookByAuthors = requests.get(URL+f"{page}&authors={request.args.get('authors')}").json()['message']
-            books = intersection(bookByTitle, bookByAuthors)
-        elif request.args.get('title') != '':
-            books = requests.get(URL+f"{page}&title={request.args.get('title')}").json()['message']
-        elif request.args.get('authors') != '':
-            books = requests.get(URL+f"{page}&authors={request.args.get('authors')}").json()['message']
-        else:
-            books = requests.get(URL+f"{page}").json()['message']
-
-        return jsonify(books), 200
-
+    if request.args.get('page'):
+        page = request.args.get('page')
     else:
-        return jsonify(error="Please Login to Use API"), 400
+        page = 1
+
+    if request.args.get('title') != '' and request.args.get('authors') != '':
+        bookByTitle = requests.get(URL+f"{page}&title={request.args.get('title')}").json()['message']
+        bookByAuthors = requests.get(URL+f"{page}&authors={request.args.get('authors')}").json()['message']
+        books = intersection(bookByTitle, bookByAuthors)
+    elif request.args.get('title') != '':
+        books = requests.get(URL+f"{page}&title={request.args.get('title')}").json()['message']
+    elif request.args.get('authors') != '':
+        books = requests.get(URL+f"{page}&authors={request.args.get('authors')}").json()['message']
+    else:
+        books = requests.get(URL+f"{page}").json()['message']
+
+    return jsonify(books), 200
 
 @api.get('/member/<int:id>')
 def get(id):
@@ -46,7 +41,7 @@ def get(id):
         else:
             return jsonify(user=user.serialize), 200
     else:
-        return jsonify(error="Please Login to Use API"), 400
+        return jsonify(error="Please Login to Use API"), 401
 
 # @api.get('/users')
 # def get_users():

@@ -42,53 +42,62 @@ def browse():
 # API stuff #
 @books.delete('/delete-book')
 def delete():
-    params = json.loads(request.data)
-    id = int(params['id'])
-    Books.query.filter_by(id=id).delete()
-    db.session.commit()
-    return jsonify({'success': True})
+    if "logged_in" in session:
+        params = json.loads(request.data)
+        id = int(params['id'])
+        Books.query.filter_by(id=id).delete()
+        db.session.commit()
+        return jsonify({'success': True}), 200
+    else:
+        return jsonify({"status": "Failure - Not Logged in"}), 401
 
 @books.delete('/delete-books')
 def deleteAll():
-    params = json.loads(request.data)
-    ids = params['ids']
-    Books.query.filter(Books.id.in_(ids)).delete()
-    db.session.commit()
-    return jsonify({'success': True}), 200
+    if "logged_in" in session:
+        params = json.loads(request.data)
+        ids = params['ids']
+        Books.query.filter(Books.id.in_(ids)).delete()
+        db.session.commit()
+        return jsonify({'success': True}), 200
+    else:
+        return jsonify({"status": "Failure - Not Logged in"}), 401
 
 @books.post('/add-books')
 def add():
-    params = json.loads(request.data)
+    if "logged_in" in session:
+        params = json.loads(request.data)
 
-    url = ''
+        url = ''
 
-    if 'title' in params:
-        url = url + '&title=' + params['title']
-    
-    if 'author' in params:
-        url = url + '&authors=' + params['author']
-
-    if 'publisher' in params:
-        url = url + '&publisher=' + params['publisher']
+        if 'title' in params:
+            url = url + '&title=' + params['title']
         
-    quantity = int(params['quantity'])
-    perbook = int(params['perbook'])
-    if quantity <= 0 or perbook <=0 :
-        return jsonify({'success': False}), 400
-
-    page = 1
-    while quantity > 0:
-        response = requests.get(URL + str(page) + url).json()['message']
-        if len(response) == 0:
-            break
-        for book in response:
-            if quantity == 0:
-                break
-            if len(Books.query.filter_by(book_id=book['bookID']).all()) == 0:
-                new = Books(book, perbook)
-                db.session.add(new)
-                quantity -= 1
-        page += 1
-    db.session.commit()
+        if 'author' in params:
+            url = url + '&authors=' + params['author']
     
-    return jsonify({'added': int(params['quantity']) - quantity})
+        if 'publisher' in params:
+            url = url + '&publisher=' + params['publisher']
+        
+        quantity = int(params['quantity'])
+        perbook = int(params['perbook'])
+        if quantity <= 0 or perbook <=0 :
+            return jsonify({'success': False}), 400
+
+        page = 1
+        while quantity > 0:
+            response = requests.get(URL + str(page) + url).json()['message']
+            if len(response) == 0:
+                break
+            for book in response:
+                if quantity == 0:
+                    break
+                if len(Books.query.filter_by(book_id=book['bookID']).all()) == 0:
+                    new = Books(book, perbook)
+                    db.session.add(new)
+                    quantity -= 1
+            page += 1
+        db.session.commit()
+    
+        return jsonify({'added': int(params['quantity']) - quantity})
+    else:
+        return jsonify({"status": "Failure - Not Logged in"}), 401
