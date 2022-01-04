@@ -12,7 +12,7 @@ class Books(db.Model):
     title    = db.Column(db.String(100), nullable=False)
     author   = db.Column(db.String(100), nullable=False)
     book_id  = db.Column(db.Integer, nullable=False)
-    added    = db.Column(db.DateTime(timezone=True), default=func.now(), nullable=False)
+    added    = db.Column(db.DateTime(timezone=True), default=datetime.datetime.now(), nullable=False)
 
     def __init__(self, book, quantity):
         self.isbn = book['isbn']
@@ -41,7 +41,7 @@ class Members(db.Model):
     credit   = db.Column(db.Integer, nullable=False)
     payments = db.relationship('Payment',backref='Members', lazy='dynamic')
     books    = db.relationship('Issued',backref='Members', lazy='dynamic')
-    created  = db.Column(db.DateTime(timezone=True), default=func.now(), nullable=False)
+    created  = db.Column(db.DateTime(timezone=True), default=datetime.datetime.now(), nullable=False)
 
 
     def __init__(self, member):
@@ -64,7 +64,7 @@ class Issued(db.Model):
     id       = db.Column(db.Integer, primary_key=True)
     member_id  = db.Column(db.Integer, db.ForeignKey('members.id'), nullable=False)
     book_id  = db.Column(db.Integer, db.ForeignKey('books.id'), nullable=False)
-    issued = db.Column(db.DateTime(timezone=True), default=func.now(), nullable=False)
+    issued = db.Column(db.DateTime(timezone=True), default=datetime.datetime.now(), nullable=False)
     returned = db.Column(db.DateTime(timezone=True))
     status = db.Column(db.Boolean, nullable=False, default=True)
     rent  = db.Column(db.Integer, default=INIT_RENT, nullable=False)
@@ -95,7 +95,7 @@ class Payment(db.Model):
     id       = db.Column(db.Integer, primary_key=True)
     member_id  = db.Column(db.Integer, db.ForeignKey('members.id'), nullable=False)
     amount = db.Column(db.Integer, nullable=False)
-    date = db.Column(db.DateTime(timezone=True), default=func.now(), nullable=False)
+    date = db.Column(db.DateTime(timezone=True), default=datetime.datetime.now(), nullable=False)
 
     def __init__(self, id, amount):
         self.amount = amount
