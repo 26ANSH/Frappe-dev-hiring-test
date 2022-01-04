@@ -26,18 +26,10 @@ This Repo is the Solution for [Dev Hiring Test](https://frappe.io/dev-hiring-tes
 ## Live
 
 Hosted on Microsoft Azure App Service [Click Here](https://26ansh-lms.azurewebsites.net). `https://26ansh-lms.azurewebsites.net`
-## How to Run
 
-After Cloning the Code Files on Your PC
-
-1. Install all modules specified in requirements.txt
-``` 
-pip3 install -r requirements.txt
+Use Password
 ```
-
-2. You are All Set up to Strt your App
-```
-python3 app.py
+admin@lms
 ```
 
 ## App Demo
@@ -60,7 +52,7 @@ python3 app.py
 6. Deleting a Book
 <img src="/screenshots/delete.png" alt="drawing" />
 
-7. Cretaing New Users
+7. Creating New Users
 <img src="/screenshots/user.png" alt="drawing" />
 
 8. Issue and Returning a Book
@@ -72,3 +64,18 @@ python3 app.py
 
 10. Page not Found
 <img src="/screenshots/404.png" alt="drawing" />
+
+
+## How to Run
+
+After Cloning the Code Files on Your PC
+
+1. Install all modules specified in requirements.txt
+``` 
+pip3 install -r requirements.txt
+```
+
+2. You are All Set up to Start your App
+```
+python3 app.py
+```
