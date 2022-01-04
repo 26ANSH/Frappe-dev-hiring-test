@@ -46,7 +46,7 @@ python3 app.py
 <img src="/screenshots/login.png" alt="drawing" width="300"/>
 
 2. Browse Books - Using the API With filtering Options
-<img src="/screenshots/Browse.png" alt="drawing" width="300"/>
+<img src="/screenshots/Browse.png" alt="drawing"/>
 
 3. Dashboard
 <img src="/screenshots/dashboard.png" alt="drawing" width="300"/>
@@ -60,12 +60,15 @@ python3 app.py
 6. Deleting a Book
 <img src="/screenshots/delete.png" alt="drawing" width="300"/>
 
-7. Issue and Returning a Book
+7. Cretaing New Users
+<img src="/screenshots/user.png" alt="drawing" width="300"/>
+
+8. Issue and Returning a Book
 <img src="/screenshots/import.png" alt="drawing" width="300"/>
 <img src="/screenshots/import-1.png" alt="drawing" width="300"/>
 
-8. Check all Book Transaction and Payments
+9. Check all Book Transaction and Payments
 <img src="/screenshots/transactions.png" alt="drawing" width="300"/>
 
-9. Page not Found
+10. Page not Found
 <img src="/screenshots/440.png" alt="drawing" width="300"/>
