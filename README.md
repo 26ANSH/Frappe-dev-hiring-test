@@ -26,6 +26,46 @@ This Repo is the Solution for [Dev Hiring Test](https://frappe.io/dev-hiring-tes
 ## Live
 
 Hosted on Microsoft Azure App Service [Click Here](https://26ansh-lms.azurewebsites.net). `https://26ansh-lms.azurewebsites.net`
+
+Use Password
+```
+admin@lms
+```
+
+## App Demo
+
+1. Login for Library Admin
+<img src="/screenshots/login.png" alt="drawing" />
+
+2. Browse Books - Using the API With filtering Options
+<img src="/screenshots/Browse.png" alt="drawing"/>
+
+3. Dashboard
+<img src="/screenshots/dashboard.png" alt="drawing" />
+
+4. Importing Books
+<img src="/screenshots/import.png" alt="drawing" />
+
+5. Books in Database
+<img src="/screenshots/books.png" alt="drawing"/>
+
+6. Deleting a Book
+<img src="/screenshots/delete.png" alt="drawing" />
+
+7. Creating New Users
+<img src="/screenshots/user.png" alt="drawing" />
+
+8. Issue and Returning a Book
+<img src="/screenshots/issue.png" alt="drawing" />
+<img src="/screenshots/issue-1.png" alt="drawing" />
+
+9. Check all Book Transaction and Payments
+<img src="/screenshots/transactions.png" alt="drawing" />
+
+10. Page not Found
+<img src="/screenshots/404.png" alt="drawing" />
+
+
 ## How to Run
 
 After Cloning the Code Files on Your PC
@@ -35,37 +75,7 @@ After Cloning the Code Files on Your PC
 pip3 install -r requirements.txt
 ```
 
-2. You are All Set up to Strt your App
+2. You are All Set up to Start your App
 ```
 python3 app.py
 ```
-
-## App Demo
-
-1. Login for Library Admin
-<img src="/screenshots/login.png" alt="drawing" width="300"/>
-
-2. Browse Books - Using the API With filtering Options
-<img src="/screenshots/Browse.png" alt="drawing" width="300"/>
-
-3. Dashboard
-<img src="/screenshots/dashboard.png" alt="drawing" width="300"/>
-
-4. Importing Books
-<img src="/screenshots/import.png" alt="drawing" width="300"/>
-
-5. Books in Database
-<img src="/screenshots/books.png" alt="drawing" width="300"/>
-
-6. Deleting a Book
-<img src="/screenshots/delete.png" alt="drawing" width="300"/>
-
-7. Issue and Returning a Book
-<img src="/screenshots/import.png" alt="drawing" width="300"/>
-<img src="/screenshots/import-1.png" alt="drawing" width="300"/>
-
-8. Check all Book Transaction and Payments
-<img src="/screenshots/transactions.png" alt="drawing" width="300"/>
-
-9. Page not Found
-<img src="/screenshots/440.png" alt="drawing" width="300"/>
