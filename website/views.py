@@ -44,7 +44,7 @@ def profile():
 @views.route('/dashboard', methods=['GET'])
 def dashboard():
     if "logged_in" in session:
-        return render_template("main/dashboard.html")
+        return render_template("main/dashboard.html", books = Books.query.count(), members = Members.query.count())
     else:
         return redirect(url_for('views.index', error="Please login to view this page."))
 

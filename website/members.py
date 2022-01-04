@@ -8,7 +8,7 @@ import datetime
 
 member = Blueprint('members', __name__)
 
-def issue(member, book, status):
+def issue(member, book):
     Book = Books.query.get(book)
     Member = Members.query.get(member)
 
@@ -20,26 +20,33 @@ def issue(member, book, status):
 
     if Member is None:
         return 400, "Member not found"
+    elif (Member.credit-INIT_RENT) <= -500:
+        return 400, "Member has insufficient credit"
     
     issued = Issued.query.filter_by(member_id=member, book_id=book, status=True).first()
     
-    if status == True:
-        if issued:
-            return 400, 'Book Already Issued'
-        else:
-            issued = Issued(member, book)
-            Member.credit = Member.credit - 20
-            Member.books.append(issued)
-            db.session.commit()
-            return 200, 'Book Issued'
+    if issued:
+        return 400, 'Book Already Issued'
     else:
-        if not issued:
-            return 400, 'Book not Issued'
-        else:
-            issued.returned = datetime.datetime.now()
-            issued.status = False
-            db.session.commit()
-            return 200, 'Book Returned'
+        issued = Issued(member, book)
+        Member.credit = Member.credit - INIT_RENT
+        Member.books.append(issued)
+        Book.issued = Book.issued + 1
+        db.session.commit()
+        return 200, Issued.query.get(issued.id).serialize
+
+def bookReturn(id):
+    issued = Issued.query.get(id)
+    if issued is None:
+        return 400, "Wrong Issue ID"
+    else:
+        issued.status = False
+        issued.update
+        issued.returned = datetime.datetime.now()
+        book = Books.query.get(issued.book_id)
+        book.issued -= 1
+        db.session.commit()
+        return 200, issued.serialize
 
 @member.route('/')
 def index():
@@ -48,30 +55,38 @@ def index():
     else:
         return redirect(url_for('views.index', error="Please login to view this page."))
 
-@member.route('/transactions')
+@member.route('/transactions', methods=['GET', 'POST'])
 def transactions():
-    if "logged_in" in session:
-        # books= [str(book.id) for book in Books.query.with_entities(Books.id)] 
+    if "logged_in" in session: 
         if request.method == 'GET':
-            return render_template('members/transactions.html', transactions=Issued.query.all())
+            transactions=Issued.query.all()
+            for t in transactions:
+                t.update
+            return render_template('members/transactions.html', transactions=transactions)
         else:
             params = json.loads(request.data)
-            member_id = params['member_id']
-            book_code = params['book_code']
             status = params['status']
-            code, msg = issue(member_id, book_code, status)
-            return jsonify(msg=msg, code=code), code
+            if status:
+                member_id = params['member_id']
+                book_id = params['book_id']
+                code, msg = issue(member_id, book_id)
+            else:
+                id = params['id']
+                code, msg = bookReturn(id)
+        
+            return jsonify(msg=msg, code=code), 200
     else:
         return redirect(url_for('views.index', error="Please login to view this page."))
 
-@member.get('/member/<int:id>')
-def get(id):
+@member.route('/member/<int:id>')
+def details(id):
     if "logged_in" in session:
         user = Members.query.get(id)
         if user is None:
-            return jsonify(error="User not found"), 404
+            return render_template('members/member.html', user=None)
         else:
-            return jsonify(user=user.serialize), 200
+            issued = Issued.query.filter_by(member_id=id).all()
+            return render_template('members/member.html', user=user, issued=issued)
     else:
         return redirect(url_for('views.index', error="Please login to view this page."))
 

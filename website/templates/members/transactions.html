@@ -3,20 +3,17 @@
 {% block script %}
 <script>
 
-    document.getElementById("user").classList.remove("bg-blue-900")
-    document.getElementById("user").classList.add("bg-blue-500")
-    document.getElementById("user-icon").classList.remove("text-blue-600")
-
+    document.getElementById("transaction").classList.remove("bg-blue-900")
+    document.getElementById("transaction").classList.add("bg-blue-500")
+    document.getElementById("transaction-icon").classList.remove("text-blue-600")
+    
 </script>
 {% endblock %}
 
 {% block title %}
-Users
+Book Transactions
 {% endblock %}
-
 {% block content %}
-All Users in the db
-
 
 <table id="userTable" class="w-full flex-no-wrap sm:bg-white overflow-hidden sm:shadow-lg my-5">
 
@@ -39,8 +36,7 @@ All Users in the db
         <td class="border-blue-900 border p-2 text-center">{{ t.book_id }}</td>
         <td class="border-blue-900 border p-2 text-center">{{ t.issued.date() }}</td>
         <td class="border-blue-900 border p-2 text-center">{{ t.status }}</td>
-  
-  o
+
       </tr>
 
       {% endfor %}

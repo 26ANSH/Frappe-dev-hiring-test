@@ -3,20 +3,18 @@
 {% block script %}
 <script>
 
-    document.getElementById("user").classList.remove("bg-blue-900")
-    document.getElementById("user").classList.add("bg-blue-500")
-    document.getElementById("user-icon").classList.remove("text-blue-600")
+    document.getElementById("pay").classList.remove("bg-blue-900")
+    document.getElementById("pay").classList.add("bg-blue-500")
+    document.getElementById("pay-icon").classList.remove("text-blue-600")
 
 </script>
 {% endblock %}
 
 {% block title %}
-Users
+Payment History
 {% endblock %}
 
 {% block content %}
-All Users in the db
-
 
 <table id="userTable" class="w-full flex-no-wrap sm:bg-white overflow-hidden sm:shadow-lg my-5">
 

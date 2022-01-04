@@ -15,8 +15,6 @@ Users
 {% endblock %}
 
 {% block content %}
-All Users in the db
-
 
 <table id="userTable" class="w-full flex-no-wrap sm:bg-white overflow-hidden sm:shadow-lg my-5">
 
@@ -26,6 +24,7 @@ All Users in the db
     <th class="p-3 text-left">name</th>
     <th class="p-3 text-left">email</th>
     <th class="p-3 text-left">credit</th>
+    <th class="p-3 text-left">Actions</th>
   </tr>
 
     <tbody id="usersTableContent">
@@ -37,6 +36,10 @@ All Users in the db
         <td class="border-blue-900 border p-2 text-center">{{ user.name }}</td>
         <td class="border-blue-900 border p-2 text-center">{{ user.email }}</td>
         <td class="border-blue-900 border p-2 text-center">{{ user.credit }}</td>
+        <td class="border-blue-900 border p-2 text-center">            
+          <a href="member/{{ user.id }}"
+          class="text-center text-lg py-1 px-2 border-green-600 border rounded-xl bg-green-700 text-white hover:bg-green-900"><i class="fas fa-edit"></i>
+        </a></td>
       </tr>
 
       {% endfor %}
