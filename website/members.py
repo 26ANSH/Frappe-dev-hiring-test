@@ -45,6 +45,8 @@ def bookReturn(id):
         issued.returned = datetime.datetime.now()
         book = Books.query.get(issued.book_id)
         book.issued -= 1
+        member = Members.query.get(issued.member_id)
+        member.credit -= (issued.rent - INIT_RENT)
         db.session.commit()
         return 200, issued.serialize
 
