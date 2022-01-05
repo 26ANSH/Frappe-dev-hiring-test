@@ -24,6 +24,8 @@ def book(id):
             return render_template('books/book.html', book=book)
         members= [str(member.id) for member in Members.query.with_entities(Members.id)] 
         issued = Issued.query.filter_by(book_id=book.id, status=True).all()
+        for issued in issued:
+            issued.update
         return render_template('books/book.html', book=book, members = members, issues=issued)
     else:
         return redirect(url_for('views.index', error="Please login to view this page."))
