@@ -193,7 +193,7 @@ Book #{{ book.id }}
                 <select onchange="selectTypeChange(this.value)" class="bg-blue-700 font-bold text-white" id="member">
                     <option value="0">Member Id</option>
                     {% for member in members %}
-                        <option value="{{ member }}">{{ member }}</option>
+                        <option value="{{ member[0] }}">{{ member[0] }}</option>
                     {% endfor %}
                   </select>
                   <span id="details" class="px-4 mt-2 lg:mt-0">Select Member by Id to Issue the Book</span>
@@ -215,7 +215,7 @@ Book #{{ book.id }}
         <th class="p-2 text-left border-l ">Member</th>
         <th class="p-2 text-left border-l ">Issued</th>
         <th class="p-2 text-left border-l">status</th>
-        <th class="p-2 text-left border-l">Rent</th>
+        <th class="p-2 text-left border-l">Rent (<i class="fas fa-rupee-sign"></i>)</th>
         <th class="p-2 text-left border-l">Return</th>
       </tr>
     
@@ -227,7 +227,13 @@ Book #{{ book.id }}
             <td class="border-blue-900 border p-2 text-center">{{ t.id }}</td>
             <td class="border-blue-900 border p-2 text-center">{{ t.member_id }}</td>
             <td class="border-blue-900 border p-2 text-center">{{ t.issued.date() }}</td>
-            <td class="border-blue-900 border p-2 text-center">{{ t.status }}</td>
+            <td class="border-blue-900 border p-2 text-center">
+                {% if t.status %}
+                Active
+                {% else %}
+                Returned
+                {% endif %}
+            </td>
             <td class="border-blue-900 border p-2 text-center">{{ t.rent }}</td>
             <td class="border-blue-900 border p-2 text-center">
                 <button onclick="returnBook({{ t.id }})" class="text-white rounded-md font-bold px-2 hover:bg-red-600 py-1 bg-red-700">Return</button>

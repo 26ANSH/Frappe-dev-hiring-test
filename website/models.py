@@ -103,3 +103,13 @@ class Payment(db.Model):
         member = Members.query.filter_by(id=id).first()
         member.credit = member.credit + amount
         db.session.commit()
+
+    @property
+    def serialize(self):
+       """Return object data in easily serializable format"""
+       return {
+           'id'         : self.id,
+           'member_id'       : self.member_id,
+           'amount' : self.amount, 
+           'date': self.date
+       }

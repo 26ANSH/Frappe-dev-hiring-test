@@ -22,10 +22,10 @@ def book(id):
         book = Books.query.filter_by(book_id=id).first()
         if not book:
             return render_template('books/book.html', book=book)
-        members= [str(member.id) for member in Members.query.with_entities(Members.id)] 
+        members= Members.query.with_entities(Members.id).all()
         issued = Issued.query.filter_by(book_id=book.id, status=True).all()
-        for issued in issued:
-            issued.update
+        for issue in issued:
+            issue.update
         return render_template('books/book.html', book=book, members = members, issues=issued)
     else:
         return redirect(url_for('views.index', error="Please login to view this page."))

@@ -83,19 +83,25 @@ def transactions():
 @member.route('/member/<int:id>')
 def details(id):
     if "logged_in" in session:
-        user = Members.query.get(id)
-        if user is None:
-            return render_template('members/member.html', user=None)
-        else:
-            issued = Issued.query.filter_by(member_id=id).all()
-            return render_template('members/member.html', user=user, issued=issued)
+        return render_template('members/member.html', user=Members.query.get(id))
     else:
         return redirect(url_for('views.index', error="Please login to view this page."))
 
-@member.route('/payments')
+@member.route('/payments', methods=['GET', 'POST'])
 def payments():
     if "logged_in" in session:
-        return render_template('members/payments.html', payments=Payment.query.all())
+        if request.method == "GET":
+            return render_template('members/payments.html', payments=Payment.query.all())
+        else:
+            params = json.loads(request.data)
+            amount = int(params['amount'])
+            member_id = params['id']
+            member = Members.query.get(member_id)
+            if not member or amount < 100:
+                return jsonify(msg="Payment UnSuccessful", code=404), 404
+            member.payments.append(Payment(member_id, amount))
+            db.session.commit()
+            return jsonify(msg="Payment Successful", payment=member.payments[-1].serialize, code=200), 200
     else:
         return redirect(url_for('views.index', error="Please login to view this page."))
 
