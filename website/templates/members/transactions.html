@@ -6,7 +6,6 @@
     document.getElementById("transaction").classList.remove("bg-blue-900")
     document.getElementById("transaction").classList.add("bg-blue-500")
     document.getElementById("transaction-icon").classList.remove("text-blue-600")
-    
 </script>
 {% endblock %}
 
@@ -20,10 +19,11 @@ Book Transactions
     <tr
     class="text-white bg-blue-700">
     <th class="p-3 text-left">Id</th>
-    <th class="p-3 text-left">Member</th>
-    <th class="p-3 text-left">Books</th>
+    <th class="p-3 text-left">Member Id</th>
+    <th class="p-3 text-left">Book Id</th>
+    <th class="p-3 text-left">Rent (<i class="fas fa-rupee-sign"></i>)</th>
     <th class="p-3 text-left">Issued</th>
-    <th class="p-3 text-left">status</th>
+    <th class="p-3 text-left">Status</th>
   </tr>
 
     <tbody id="usersTableContent">
@@ -34,8 +34,15 @@ Book Transactions
         <td class="border-blue-900 border p-2 text-center">{{ t.id }}</td>
         <td class="border-blue-900 border p-2 text-center">{{ t.member_id }}</td>
         <td class="border-blue-900 border p-2 text-center">{{ t.book_id }}</td>
+        <td class="border-blue-900 border p-2 text-center">{{ t.rent }}</td>
         <td class="border-blue-900 border p-2 text-center">{{ t.issued.date() }}</td>
-        <td class="border-blue-900 border p-2 text-center">{{ t.status }}</td>
+        <td class="border-blue-900 border p-2 text-center">
+          {% if t.status %}
+          Active
+          {% else %}
+          Returned
+          {% endif %}
+        </td>
 
       </tr>
 
