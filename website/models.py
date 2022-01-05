@@ -87,9 +87,10 @@ class Issued(db.Model):
 
     @property
     def update(self):
-       now = datetime.datetime.now()
-       self.rent += (self.issued.date() - now.date()).days * DAILY_RENT
-       db.session.commit()
+        if self.status:
+            now = datetime.datetime.now()
+            self.rent += (now.date() - self.issued.date()).days * DAILY_RENT
+            db.session.commit()
 class Payment(db.Model):
     __tablename__ = 'payment'
     id       = db.Column(db.Integer, primary_key=True)
