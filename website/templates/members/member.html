@@ -16,7 +16,9 @@ Member #{{ user.id }}
 
     function addCredit() {
         credit = document.getElementById("value").value
-
+        console.log(credit)
+        if(credit == "") 
+        return
         if (credit < 100) 
         document.getElementById('result').innerHTML = "You can't add less than 100 credits"
         else{
@@ -73,7 +75,9 @@ Member #{{ user.id }}
                 const t = data.msg
                 var date = new Date(t.issued)
                 date = date.toISOString().substring(0, 10);
-                document.getElementById(`${id}-Return`).innerHTML = date
+                cells = document.getElementById(id).getElementsByTagName('td')
+                cells[4].innerHTML = "Returned"
+                cells[5].innerHTML = date
               }
               else{
                   document.getElementById('result').innerHTML = data.msg
@@ -110,7 +114,7 @@ Member #{{ user.id }}
                 </tr>
                 <tr>
                     <td class="border border-black p-1 px-2 font-bold">Since</td>
-                    <td class="border border-black p-1 px-2 ">{{ user.created }}</td>
+                    <td class="border border-black p-1 px-2 ">{{ user.created.date() }}</td>
                 </tr>
             </table>
         </div>
@@ -123,7 +127,7 @@ Member #{{ user.id }}
             <input id="value" class="border-2 border-blue-900 text-black rounded mr-1 py-1 px-2" type="integer"
                 placeholder="Credit">
             <button onclick="addCredit()"
-                class="py-1 px-2 bg-blue-900 shadow-md text-white rounded text-lg hover:bg-blue-800">Issue</button>
+                class="py-1 px-2 bg-blue-900 shadow-md text-white rounded text-lg hover:bg-blue-800">Add</button>
             <p class="py-1 px-2" id="result">You can add a Minimum of <i class="fas fa-rupee-sign"></i>100, Max allowance till you reach a <i class="fas fa-rupee-sign"></i>500 balance
         </div>
 
@@ -150,11 +154,11 @@ Member #{{ user.id }}
                     <td class="border-blue-900 border p-2 text-center">{{ t.issued.date() }}</td>
                     <td class="border-blue-900 border p-2 text-center">{{ t.rent }}</td>
                         {% if t.status %}
-                        <td class="border-blue-900 border p-2 text-center"></td>Active</td>
-                        <td id="{{ t.id}}-Return" class="border-blue-900 border p-2 text-center"><button onclick="returnBook({{ t.id }})"class="text-white rounded-md font-bold px-2 hover:bg-red-600 py-1 bg-red-700">Return</button></td>
+                        <td class="border-blue-900 border p-2 text-center">Active</td>
+                        <td class="border-blue-900 border p-2 text-center"><button onclick="returnBook({{ t.id }})"class="text-white rounded-md font-bold px-2 hover:bg-red-600 py-1 bg-red-700">Return</button></td>
                         {% else %}
                         <td class="border-blue-900 border p-2 text-center">Returned</td>
-                        <td id="{{ t.id}}-Return" class="border-blue-900 border p-2 text-center">{{ t.returned.date() }}</td>
+                        <td class="border-blue-900 border p-2 text-center">{{ t.returned.date() }}</td>
                         {% endif %}
                     </td>
                 </tr>

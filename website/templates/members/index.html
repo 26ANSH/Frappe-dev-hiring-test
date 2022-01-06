@@ -7,6 +7,65 @@
     document.getElementById("user").classList.add("bg-blue-500")
     document.getElementById("user-icon").classList.remove("text-blue-600")
 
+    function searchBookByCode(code) 
+    {
+      const type = parseInt(document.getElementById('searchBy').value)
+      const table = document.getElementById('usersTableContent')
+      var rows = table.getElementsByTagName('tr')
+      if(type == 1){
+        code = code.toUpperCase()
+      }
+      for (var i = 0; i < rows.length; i++)
+       {
+  
+        if (code == '') {
+          rows[i].classList.remove("hidden")
+        }
+        else {
+          cells = rows[i].getElementsByTagName('td')
+          value = cells[type].textContent
+          if(type == 1){
+            value = value.toUpperCase()
+          }
+            if (value.startsWith(code)) 
+            {
+              if(rows[i].classList.contains("hidden"))
+              {
+                rows[i].classList.remove("hidden")
+                rows[i].classList.add("table-row")
+              }
+            }
+            else 
+            {
+              if(!(rows[i].classList.contains("hidden")))
+              {
+                rows[i].classList.remove("table-row")
+                rows[i].classList.add("hidden")
+              }
+            }
+        }
+      
+       }
+    }
+
+
+    function selectTypeChange(type)
+    {
+      const searchInput = document.getElementById('searchInput')
+      type = parseInt(type)
+      if(type == 0){
+        searchInput.placeholder = "Search by User ID"
+      }
+      else if(type == 1){
+        searchInput.placeholder = "Search by User Name"
+      }
+      else{
+        searchInput.placeholder = "Select Valid Input"
+      }
+    }
+
+
+
 </script>
 {% endblock %}
 
@@ -16,6 +75,24 @@ Users
 
 {% block content %}
 
+<div class="flex flex-col md:flex-row w-full justify-between items-center pr-8">
+  <div class="w-full lg:w-1/2 my-2 flex justify-evenly">
+    <select onchange="selectTypeChange(this.value)" class="bg-blue-700 font-bold text-white" id="searchBy">
+      <option value="0" selected>User Id</option>
+      <option value="1">User Name</option>
+    </select>
+  
+    <input id="searchInput" type="text" onkeyup="searchBookByCode(this.value)" placeholder="Search by User ID"
+      class="w-2/3 px-4 py-1.5 rounded-lg border-2 border-blue-700 ring-blue-200">
+    </span>
+  
+  </div>
+  
+  <div class="border-2 border-blue-700 rounded-lg px-2 py-1.5">
+    Total Members: {{ users|length }}
+  </div>
+</div>
+
 <table id="userTable" class="w-full flex-no-wrap sm:bg-white overflow-hidden sm:shadow-lg my-5">
 
     <tr
@@ -24,10 +101,10 @@ Users
     <th class="p-3 text-left">name</th>
     <th class="p-3 text-left">email</th>
     <th class="p-3 text-left">credit</th>
-    <th class="p-3 text-left">Actions</th>
+    <th class="p-3 text-left">Actions</th> 
   </tr>
 
-    <tbody id="usersTableContent">
+    <tbody id="usersTableContent"> 
 
       {% for user in users %}
 

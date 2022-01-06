@@ -66,6 +66,7 @@ class Issued(db.Model):
     book_id  = db.Column(db.Integer, db.ForeignKey('books.id'), nullable=False)
     issued = db.Column(db.DateTime(timezone=True), default=datetime.datetime.now(), nullable=False)
     returned = db.Column(db.DateTime(timezone=True))
+    updated = db.Column(db.DateTime(timezone=True), default=datetime.datetime.now() )
     status = db.Column(db.Boolean, nullable=False, default=True)
     rent  = db.Column(db.Integer, default=INIT_RENT, nullable=False)
 
@@ -88,9 +89,11 @@ class Issued(db.Model):
     @property
     def update(self):
         if self.status:
-            now = datetime.datetime.now()
-            self.rent += (now.date() - self.issued.date()).days * DAILY_RENT
-            db.session.commit()
+            now = datetime.datetime.now() 
+            if self.updated.date() != now.date():
+                self.rent += (now.date() - self.issued.date()).days * DAILY_RENT
+                self.updated = now
+                db.session.commit()
 class Payment(db.Model):
     __tablename__ = 'payment'
     id       = db.Column(db.Integer, primary_key=True)
